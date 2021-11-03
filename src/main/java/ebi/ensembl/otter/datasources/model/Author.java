@@ -8,17 +8,25 @@ import javax.persistence.Id;
 @Entity
 @Table(schema = "author")
 public class Author {
-	
+
+	public Author(int authorId, String authorEmail, String authorName, int groupId) {
+		super();
+		this.authorId = authorId;
+		this.authorEmail = authorEmail;
+		this.authorName = authorName;
+		this.groupId = groupId;
+	}
+
 	@Id
 	@Column(name = "author_id")
 	private int authorId;
-	
+
 	@Column(name = "author_email")
 	private String authorEmail;
-	
+
 	@Column(name = "author_name")
 	private String authorName;
-	
+
 	@Column(name = "group_id")
 	private int groupId;
 

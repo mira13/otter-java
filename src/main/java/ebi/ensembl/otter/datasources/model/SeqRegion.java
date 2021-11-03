@@ -11,21 +11,21 @@ import javax.persistence.Table;
 @Entity
 @Table(schema = "seq_region")
 public class SeqRegion {
-	
+
 	@Id
 	@Column(name = "seq_region_id")
 	private int seqRegionId;
-	
+
 	private String name;
-	
+
 	@Column(name = "coord_system_id")
 	private int coordSystemId;
-	
+
 	private int length;
 
-    @OneToMany(mappedBy="seqRegionId")
+	@OneToMany(mappedBy = "seqRegionId")
 	private Set<SliceLock> sliceLocks;
-	
+
 	public int getSeqRegionId() {
 		return seqRegionId;
 	}

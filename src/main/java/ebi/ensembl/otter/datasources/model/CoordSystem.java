@@ -8,20 +8,20 @@ import javax.persistence.Table;
 @Entity
 @Table(schema = "coord_system")
 public class CoordSystem {
-	
+
 	@Id
 	@Column(name = "coord_system_id")
 	private int coordSystemId;
-	
+
 	@Column(name = "species_id")
 	private int speciesId;
-	
+
 	private String name;
-	
+
 	private String version;
-	
+
 	private int rank;
-	
+
 	private String attrib;
 
 	public int getCoordSystemId() {
