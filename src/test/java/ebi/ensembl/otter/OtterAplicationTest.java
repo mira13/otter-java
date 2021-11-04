@@ -8,5 +8,4 @@ public class OtterAplicationTest {
 	@Test
 	public void contextLoads() {
 	}
-
 }

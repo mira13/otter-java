@@ -17,13 +17,8 @@ public class SeqRegionService {
 	@Autowired
 	private SeqRegionRepository seqRegionRepository;
 	
-	public List<SeqRegion> getOtterDataSets() {
-        
+	public List<SeqRegion> getOtterDataSets() {     
 		int topLevelCoorSystemId = coordSystemRepository.findByRank(1).get(0).getCoordSystemId();
-        System.out.println(topLevelCoorSystemId);
-		return seqRegionRepository.findVisibleByCoordSystemId(topLevelCoorSystemId);
-
-
+    	return seqRegionRepository.findVisibleByCoordSystemId(topLevelCoorSystemId);
 	}
-
 }

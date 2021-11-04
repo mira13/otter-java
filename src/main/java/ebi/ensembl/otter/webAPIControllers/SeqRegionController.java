@@ -21,7 +21,6 @@ public class SeqRegionController {
 
 	@GetMapping("/topVisible")
 	public List<SeqRegion> findAllTopRankSeqRegionsWithVisibleAttrib() throws JSONException {
-
 		return service.getOtterDataSets() ;
 	}
 

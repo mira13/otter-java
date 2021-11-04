@@ -1,6 +1,6 @@
 package ebi.ensembl.otter.datasources.model;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +24,9 @@ public class SeqRegion {
 
 	private int length;
 
+	@OneToMany(mappedBy = "seqRegionId", fetch = FetchType.LAZY)
+	private List<SeqRegionAttrib> attributes;
+	
 	public int getSeqRegionId() {
 		return seqRegionId;
 	}
@@ -55,4 +58,14 @@ public class SeqRegion {
 	public void setLength(int length) {
 		this.length = length;
 	}
+
+	public List<SeqRegionAttrib> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(List<SeqRegionAttrib> attributes) {
+		this.attributes = attributes;
+	}
+
+
 }

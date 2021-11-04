@@ -15,13 +15,12 @@ public interface SeqRegionRepository extends JpaRepository<SeqRegion, Integer> {
 	public List<SeqRegion> findByNameAndCoordSystemId(String name, int coordSystemId);
 
 	@Query(value = """
-			select s.*
+			select s.* 
 			from seq_region s
 			JOIN seq_region_attrib a
 			ON a.seq_region_id = s.seq_region_id
-			JOIN attrib_type b
-			ON b.attrib_type_id = a.attrib_type_id
-			WHERE b.code = \"hidden\" 
+			WHERE a.attrib_type_id = 129
+			AND a.value = 0 
 			AND s.coord_system_id = :cs
 			;
 			""", nativeQuery = true)
