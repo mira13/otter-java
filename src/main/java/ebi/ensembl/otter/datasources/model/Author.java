@@ -16,6 +16,9 @@ public class Author {
 		this.authorName = authorName;
 		this.groupId = groupId;
 	}
+	
+	public Author() {
+	}
 
 	@Id
 	@Column(name = "author_id")

@@ -11,7 +11,7 @@ public class CoordSystem {
 
 	@Id
 	@Column(name = "coord_system_id")
-	private int coordSystemId;
+	private Integer coordSystemId;
 
 	@Column(name = "species_id")
 	private int speciesId;
@@ -24,11 +24,11 @@ public class CoordSystem {
 
 	private String attrib;
 
-	public int getCoordSystemId() {
+	public Integer getCoordSystemId() {
 		return coordSystemId;
 	}
 
-	public void setCoordSystemId(int coordSystemId) {
+	public void setCoordSystemId(Integer coordSystemId) {
 		this.coordSystemId = coordSystemId;
 	}
 

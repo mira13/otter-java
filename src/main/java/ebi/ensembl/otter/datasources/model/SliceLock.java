@@ -11,6 +11,9 @@ import javax.persistence.Table;
 @Table(schema = "slice_lock")
 public class SliceLock {
 
+	public SliceLock() {
+	}
+
 	public SliceLock(int sliceLockId, int seqRegionId, int seqRegionStart, int seqRegionEnd, Author author,
 			String tsBegin, String tsActivity, String active, String freed, Author freedAuthor, String intent,
 			String hostname, int otterVersion, String tsFree) {

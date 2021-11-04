@@ -16,32 +16,10 @@ import ebi.ensembl.otter.datasources.model.CoordSystem;
 public class SliceLockService {
 
 	@Autowired
-	private CoordSystemRepository coordSystemRepository;
-	@Autowired
-	private SeqRegionRepository seqRegionRepository;
-	@Autowired
 	private SliceLockRepository sliceLockRepository;
 
-	public List<SliceLock> getSliceLocksHibernates(String csName, String csVersion, String name) {
-
-		List<CoordSystem> cs = coordSystemRepository.findByNameAndVersion(csName, csVersion);
-
-		if (!cs.isEmpty()) {
-
-			List<SeqRegion> seqRegion = seqRegionRepository.findByNameAndCoordSystemId(name,
-					Integer.valueOf(cs.get(0).getCoordSystemId()));
-
-			if (!seqRegion.isEmpty()) {
-				List<SliceLock> sliceLockList = sliceLockRepository
-						.findBySeqRegionIdAndActiveNot(seqRegion.get(0).getSeqRegionId(), "free");
-				return sliceLockList;
-			}
-		}
-		return null;
-	}
-
 	/*
-	 * This method is questionable for now. It runs 90ms vs 150 in above query for
+	 * This method is questionable for now. It runs 90ms vs 150 in JPA query for
 	 * ch17, but here if we need to add repo, we should manually implement query
 	 * that also not a big deal as we add repos not so often, and implement query -
 	 * is 3 min of dev

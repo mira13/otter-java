@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -22,9 +23,6 @@ public class SeqRegion {
 	private int coordSystemId;
 
 	private int length;
-
-	@OneToMany(mappedBy = "seqRegionId")
-	private Set<SliceLock> sliceLocks;
 
 	public int getSeqRegionId() {
 		return seqRegionId;
@@ -57,13 +55,4 @@ public class SeqRegion {
 	public void setLength(int length) {
 		this.length = length;
 	}
-
-	public Set<SliceLock> getSliceLocks() {
-		return sliceLocks;
-	}
-
-	public void setSliceLocks(Set<SliceLock> sliceLocks) {
-		this.sliceLocks = sliceLocks;
-	}
-
 }
