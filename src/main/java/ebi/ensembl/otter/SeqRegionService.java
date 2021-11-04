@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ebi.ensembl.otter.datasources.model.CoordSystem;
 import ebi.ensembl.otter.datasources.model.SeqRegion;
 import ebi.ensembl.otter.datasources.repository.CoordSystemRepository;
 import ebi.ensembl.otter.datasources.repository.SeqRegionRepository;
@@ -20,5 +21,9 @@ public class SeqRegionService {
 	public List<SeqRegion> getOtterDataSets() {     
 		int topLevelCoorSystemId = coordSystemRepository.findByRank(1).get(0).getCoordSystemId();
     	return seqRegionRepository.findVisibleByCoordSystemId(topLevelCoorSystemId);
+	}
+	
+	public CoordSystem getTopCoordSystem() {     		
+    	return coordSystemRepository.findByRank(1).get(0);
 	}
 }
