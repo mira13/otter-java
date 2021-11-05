@@ -24,7 +24,7 @@ public class SeqRegion {
 
 	private int length;
 
-	@OneToMany(mappedBy = "seqRegionId", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "seqRegionId")
 	private List<SeqRegionAttrib> attributes;
 	
 	public int getSeqRegionId() {

@@ -32,8 +32,9 @@ public class SeqRegionController {
 		String csVersion = cs.getVersion();
 		String description;
 		String write_access;
-
+    
 		for (SeqRegion region : seqRegionList) {
+			
 			description = "";
 			write_access = "";
 			for (SeqRegionAttrib attr : region.getAttributes()) {
@@ -43,16 +44,8 @@ public class SeqRegionController {
 				if (attr.getAttribTypeId().equals(49)) {
 					description = attr.getValue();
 				}
-
 			};
-			dataSetList.add(new DataSet(
-					region.getName(),
-                    description,
-                    csVersion,
-                    "0",
-                    write_access,
-                    csName
-					));
+			dataSetList.add(new DataSet(region.getName(), description, csVersion, "0", write_access, csName));
 
 		}
 

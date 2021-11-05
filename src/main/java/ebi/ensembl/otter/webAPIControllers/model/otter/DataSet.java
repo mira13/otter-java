@@ -1,14 +1,14 @@
 package ebi.ensembl.otter.webAPIControllers.model.otter;
 
 public class DataSet {
-    
+
 	private String name;
-    
-    private String description;
-    
-    private String coord_system_version;
-    
-    public DataSet(String name, String description, String coord_system_version, String is_hidden, String write_access,
+
+	private String description;
+
+	private String coord_system_version;
+
+	public DataSet(String name, String description, String coord_system_version, String is_hidden, String write_access,
 			String coord_system_name) {
 		super();
 		this.name = name;
@@ -20,10 +20,10 @@ public class DataSet {
 	}
 
 	private String is_hidden;
-    
-    private String write_access;
-    
-    private String coord_system_name;
+
+	private String write_access;
+
+	private String coord_system_name;
 
 	public String getName() {
 		return name;
