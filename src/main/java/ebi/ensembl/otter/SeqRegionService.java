@@ -1,5 +1,6 @@
 package ebi.ensembl.otter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,14 @@ public class SeqRegionService {
 	@Autowired
 	private SeqRegionRepository seqRegionRepository;
 	
-	public List<SeqRegion> getOtterDataSets() {     
-		int topLevelCoorSystemId = coordSystemRepository.findByRank(1).get(0).getCoordSystemId();
-    	return seqRegionRepository.findVisibleByCoordSystemId(topLevelCoorSystemId);
+	private List<SeqRegion> topDatasetCache = new ArrayList<SeqRegion>(); 
+	
+	public List<SeqRegion> getOtterDataSets() {     	
+		if (topDatasetCache.isEmpty()) {
+			int topLevelCoorSystemId = coordSystemRepository.findByRank(1).get(0).getCoordSystemId();
+			topDatasetCache = seqRegionRepository.findVisibleByCoordSystemId(topLevelCoorSystemId);
+		}
+    	return topDatasetCache;
 	}
 	
 	public CoordSystem getTopCoordSystem() {     		
