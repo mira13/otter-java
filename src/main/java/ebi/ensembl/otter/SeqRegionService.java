@@ -23,6 +23,12 @@ public class SeqRegionService {
 	
 	public List<SeqRegion> getOtterDataSets() {     	
 		if (topDatasetCache.isEmpty()) {
+			/*
+			 * we use cached value here. Because fetching attributes 
+			 * like description and write_access takes significant time. 
+			 * But changed almost never - not more often than release. 
+			 * Current cache is dropped by app restart
+			 */
 			int topLevelCoorSystemId = coordSystemRepository.findByRank(1).get(0).getCoordSystemId();
 			topDatasetCache = seqRegionRepository.findVisibleByCoordSystemId(topLevelCoorSystemId);
 		}
