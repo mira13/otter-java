@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"ebi.ensembl.otter"},{"l":"ebi.ensembl.otter.datasources.model"},{"l":"ebi.ensembl.otter.datasources.repository"},{"l":"ebi.ensembl.otter.webAPIControllers"},{"l":"ebi.ensembl.otter.webAPIControllers.model.otter"}];updateSearchResults();

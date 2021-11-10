@@ -1,0 +1,5 @@
+ebi.ensembl.otter
+ebi.ensembl.otter.datasources.model
+ebi.ensembl.otter.datasources.repository
+ebi.ensembl.otter.webAPIControllers
+ebi.ensembl.otter.webAPIControllers.model.otter

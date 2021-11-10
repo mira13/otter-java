@@ -14,6 +14,13 @@ public interface SeqRegionRepository extends JpaRepository<SeqRegion, Integer> {
 
 	public List<SeqRegion> findByNameAndCoordSystemId(String name, int coordSystemId);
 
+	/**
+	 * Selects all seq_regions with exact coord_system_id,
+	 * that has attribute "hidden" (id 129) set to 0
+	 * 
+	 * @param cs - coordinate system id
+	 * @return native query result
+	 */
 	@Query(value = """
 			select s.* 
 			from seq_region s

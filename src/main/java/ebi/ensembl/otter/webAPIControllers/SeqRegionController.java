@@ -23,6 +23,14 @@ public class SeqRegionController {
 	@Autowired
 	private SeqRegionService service;
 
+	/**
+	 * /seqRegion/topVisible GET endpoint to get top datasets list Converts list of
+	 * SeqRegion retrieved with seqRegionService to otter compatible entity -
+	 * DataSet and returns it to user
+	 * 
+	 * @return list of otter compatible datasets
+	 * @throws JSONException
+	 */
 	@GetMapping("/topVisible")
 	public List<DataSet> findAllTopRankSeqRegionsWithVisibleAttrib() throws JSONException {
 		List<SeqRegion> seqRegionList = service.getOtterDataSets();
@@ -32,9 +40,9 @@ public class SeqRegionController {
 		String csVersion = cs.getVersion();
 		String description;
 		String write_access;
-    
+
 		for (SeqRegion region : seqRegionList) {
-			
+
 			description = "";
 			write_access = "";
 			for (SeqRegionAttrib attr : region.getAttributes()) {
@@ -44,7 +52,8 @@ public class SeqRegionController {
 				if (attr.getAttribTypeId().equals(49)) {
 					description = attr.getValue();
 				}
-			};
+			}
+			;
 			dataSetList.add(new DataSet(region.getName(), description, csVersion, "0", write_access, csName));
 
 		}
