@@ -1,6 +1,7 @@
 package ebi.ensembl.otter.datasources.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,6 +27,21 @@ public class SeqRegionAttrib implements Serializable {
 	@Column(name="attrib_type_id")
 	private Integer attribTypeId;
 
+	 @Override
+	    public boolean equals(Object o) {
+	        if (this == o) return true;
+	        if (!(o instanceof SeqRegionAttrib)) return false;
+	        SeqRegionAttrib attr = (SeqRegionAttrib) o;
+	        return Objects.equals(getSeqRegionId(), attr.getSeqRegionId())
+	        		&& Objects.equals(getAttribTypeId(), attr.getAttribTypeId())
+	        		&& Objects.equals(getValue(), attr.getValue());
+	    }
+	 
+	    @Override
+	    public int hashCode() {
+	        return Objects.hash(getSeqRegionId() + getAttribTypeId() + getValue());
+	    }
+	    
 	public Integer getSeqRegionId() {
 		return seqRegionId;
 	}

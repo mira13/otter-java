@@ -33,7 +33,6 @@ public class SliceLockController {
 	@PostMapping("/")
 	public List<SliceLock> findGeneByIdInDb(@RequestBody String body) throws JSONException {
 		JSONObject jObject = new JSONObject(body);
-		System.out.println(jObject.getString("csName") + jObject.getString("csVersion") + jObject.getString("name"));
 		return service.getSliceLocks(jObject.getString("csName"), jObject.getString("csVersion"),
 				jObject.getString("name"));
 	}
