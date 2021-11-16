@@ -24,7 +24,7 @@ public class SliceLockController {
 
 	/**
 	 * /sliceLock POST endpoint to get locks list for particular region
-	 * 
+	 *
 	 * @param body must contain csname, csversion, and name (of the seqRegion),
 	 *             usually chromosome
 	 * @return list of locks for particular region

@@ -10,4 +10,6 @@ public interface GeneRepository extends JpaRepository<Gene, Integer> {
 
 	public List<Gene> findAll();
 
+	public List<Gene> findBySeqRegionId(Integer seqRegionId);
+
 }
