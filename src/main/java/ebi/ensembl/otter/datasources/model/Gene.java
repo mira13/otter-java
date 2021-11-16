@@ -1,10 +1,12 @@
 package ebi.ensembl.otter.datasources.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -12,58 +14,69 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(schema = "gene")
 public class Gene {
-	
+
 	@Id
 	@Column(name = "gene_id")
 	private Integer geneId;
-	
+
 	public String getVersion() {
 		return version;
 	}
 
+	@OneToMany(mappedBy = "geneId")
+	private List<Transcript> transcripts;
+
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	public List<Transcript> getTranscripts() {
+		return transcripts;
+	}
+
+	public void setTranscripts(List<Transcript> transcripts) {
+		this.transcripts = transcripts;
 	}
 
 	private String biotype;
 
 	@Column(name = "analysis_id")
 	private Integer analysisId;
-	
+
 	@Column(name = "seq_region_id")
 	private Integer seqRegionId;
-	
+
 	@Column(name = "seq_region_start")
 	private Integer seqRegionStart;
-	
+
 	@Column(name = "seq_region_end")
 	private Integer seqRegionEnd;
-	
+
 	@Column(name = "seq_region_strand")
 	private Integer seqRegionStrandt;
-	
+
 	@Column(name = "display_xref_id")
 	private Integer displayXrefId;
-	
+
 	private String source;
-	
+
 	private String description;
-	
+
 	private String version;
-	
-	@Column (name = "is_current")
+
+	@Column(name = "is_current")
 	private Boolean isCurrent;
-	
-	@Column (name = "canonical_transcript_id")
+
+	@Column(name = "canonical_transcript_id")
 	private Integer canonicalTranscriptId;
-	
-	@Column (name = "stable_id")
+
+	@Column(name = "stable_id")
 	private Integer stable_id;
-	
-	@Column (name = "created_date", columnDefinition="DATETIME")
+
+	@Column(name = "created_date", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
-	
+
 	public Integer getGeneId() {
 		return geneId;
 	}
@@ -184,7 +197,7 @@ public class Gene {
 		this.modifiedDate = modifiedDate;
 	}
 
-	@Column (name = "modified_date", columnDefinition="DATETIME")
+	@Column(name = "modified_date", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date modifiedDate;
 

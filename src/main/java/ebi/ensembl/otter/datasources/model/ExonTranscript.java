@@ -34,7 +34,7 @@ public class ExonTranscript {
 			return false;
 		ExonTranscript exonTranscript = (ExonTranscript) o;
 		return Objects.equals(getExonId(), exonTranscript.getExonId())
-				&& Objects.equals(getTranscriptId(), exonTranscript.getTranscriptsId())
+				&& Objects.equals(getTranscriptId(), exonTranscript.getTranscriptId())
 				&& Objects.equals(getRank(), exonTranscript.getRank());
 	}
 

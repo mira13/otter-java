@@ -12,53 +12,53 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(schema = "transcript")
 public class Transcript {
-	
+
 	@Id
 	@Column(name = "transcript_id")
 	private Integer transcriptId;
-	
+
 	private String biotype;
 
 	@Column(name = "analysis_id")
 	private Integer analysisId;
-	
+
 	@Column(name = "gene_id")
 	private Integer geneId;
-	
+
 	@Column(name = "seq_region_id")
 	private Integer seqRegionId;
-	
+
 	@Column(name = "seq_region_start")
 	private Integer seqRegionStart;
-	
+
 	@Column(name = "seq_region_end")
 	private Integer seqRegionEnd;
-	
+
 	@Column(name = "seq_region_strand")
 	private Integer seqRegionStrandt;
-	
+
 	@Column(name = "display_xref_id")
 	private Integer displayXrefId;
-	
+
 	private String source;
-	
+
 	private String description;
-	
+
 	private String version;
-	
-	@Column (name = "is_current")
+
+	@Column(name = "is_current")
 	private Boolean isCurrent;
-	
-	@Column (name = "canonical_translation_id")
+
+	@Column(name = "canonical_translation_id")
 	private Integer canonicalTranslationId;
-	
-	@Column (name = "stable_id")
+
+	@Column(name = "stable_id")
 	private Integer stable_id;
-	
-	@Column (name = "created_date", columnDefinition="DATETIME")
+
+	@Column(name = "created_date", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
-	
+
 	public Integer getGeneId() {
 		return geneId;
 	}
@@ -195,7 +195,7 @@ public class Transcript {
 		this.modifiedDate = modifiedDate;
 	}
 
-	@Column (name = "modified_date", columnDefinition="DATETIME")
+	@Column(name = "modified_date", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date modifiedDate;
 

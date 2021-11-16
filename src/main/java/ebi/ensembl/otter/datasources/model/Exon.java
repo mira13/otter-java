@@ -12,44 +12,44 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(schema = "exon")
 public class Exon {
-	
+
 	@Id
 	@Column(name = "exon_id")
 	private Integer exontId;
-	
+
 	@Column(name = "seq_region_id")
 	private Integer seqRegionId;
-	
+
 	@Column(name = "seq_region_start")
 	private Integer seqRegionStart;
-	
+
 	@Column(name = "seq_region_end")
 	private Integer seqRegionEnd;
-	
+
 	@Column(name = "seq_region_strand")
 	private Integer seqRegionStrandt;
-	
+
 	@Column(name = "phase")
 	private Integer phase;
-	
+
 	@Column(name = "end_phase")
 	private Integer end_phase;
-	
+
 	private String version;
-	
+
 	@Column (name = "is_current")
 	private Boolean isCurrent;
-	
+
 	@Column (name = "is_constitutive")
 	private Boolean isConstitutive;
-	
+
 	@Column (name = "stable_id")
 	private Integer stable_id;
-	
+
 	@Column (name = "created_date", columnDefinition="DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
-	
+
 	@Column (name = "modified_date", columnDefinition="DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date modifiedDate;

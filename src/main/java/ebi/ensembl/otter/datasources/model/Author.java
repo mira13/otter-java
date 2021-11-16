@@ -16,7 +16,7 @@ public class Author {
 		this.authorName = authorName;
 		this.groupId = groupId;
 	}
-	
+
 	public Author() {
 	}
 
