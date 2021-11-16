@@ -44,7 +44,7 @@ public class Exon {
 	private Boolean isConstitutive;
 
 	@Column (name = "stable_id")
-	private Integer stable_id;
+	private String stable_id;
 
 	@Column (name = "created_date", columnDefinition="DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -94,11 +94,11 @@ public class Exon {
 		this.isCurrent = isCurrent;
 	}
 
-	public Integer getStable_id() {
+	public String getStable_id() {
 		return stable_id;
 	}
 
-	public void setStable_id(Integer stable_id) {
+	public void setStable_id(String stable_id) {
 		this.stable_id = stable_id;
 	}
 

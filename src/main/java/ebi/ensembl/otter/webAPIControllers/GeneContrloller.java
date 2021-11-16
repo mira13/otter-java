@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,11 +23,15 @@ public class GeneContrloller {
 	@Autowired
 	GeneService service;
 
-	@GetMapping("/getbySeqRegionId")
+	@PostMapping("/getBySeqRegionId")
 	public List<Gene> findAllBySeqRegionId(@RequestBody String body) throws JSONException {
 
 		JSONObject jObject = new JSONObject(body);
-		return service.findBySeqRegionId(Integer.valueOf(jObject.getString("seqRegionId")));
+		return service.findBySeqRegionIdAndStartAndEnd(
+				Integer.valueOf(jObject.getString("seqRegionId")),
+				Integer.valueOf(jObject.getString("seqRegionStart")),
+				Integer.valueOf(jObject.getString("seqRegionEnd"))
+				);
 
 	}
 

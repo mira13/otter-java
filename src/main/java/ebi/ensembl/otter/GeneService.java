@@ -14,8 +14,12 @@ public class GeneService {
 	@Autowired
 	GeneRepository repository;
 
-	public List<Gene> findBySeqRegionId(Integer seqRegionId) {
-		return repository.findBySeqRegionId(seqRegionId);
+	public List<Gene> findBySeqRegionIdAndStartAndEnd(Integer seqRegionId, 
+			Integer seqRegionStart,
+			Integer seqRegionEnd) {
+		return repository.findBySeqRegionIdAndStartAndEnd(seqRegionId, 
+				seqRegionStart, 
+				seqRegionEnd);
 	}
 
 }

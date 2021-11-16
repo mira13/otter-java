@@ -1,10 +1,16 @@
 package ebi.ensembl.otter.datasources.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -53,7 +59,7 @@ public class Transcript {
 	private Integer canonicalTranslationId;
 
 	@Column(name = "stable_id")
-	private Integer stable_id;
+	private String stable_id;
 
 	@Column(name = "created_date", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -171,16 +177,31 @@ public class Transcript {
 		this.canonicalTranslationId = canonicalTranslationId;
 	}
 
-	public Integer getStable_id() {
+	public String getStable_id() {
 		return stable_id;
 	}
 
-	public void setStable_id(Integer stable_id) {
+	public void setStable_id(String stable_id) {
 		this.stable_id = stable_id;
 	}
 
 	public Date getCreatedDate() {
 		return createdDate;
+	}
+
+	@ManyToMany( fetch = FetchType.EAGER)
+	@JoinTable(
+	  name = "exon_transcript", 
+	  joinColumns = @JoinColumn(name = "transcript_id"), 
+	  inverseJoinColumns = @JoinColumn(name = "exon_id"))
+	private List<Exon> exons;
+
+	public List<Exon> getExons() {
+		return exons;
+	}
+
+	public void setExons(List<Exon> exons) {
+		this.exons = exons;
 	}
 
 	public void setCreatedDate(Date createdDate) {

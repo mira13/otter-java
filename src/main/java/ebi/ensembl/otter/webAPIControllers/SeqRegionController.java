@@ -20,6 +20,7 @@ import ebi.ensembl.otter.webAPIControllers.model.otter.DataSet;
 @CrossOrigin
 @RequestMapping("/seqRegion")
 public class SeqRegionController {
+	
 	@Autowired
 	private SeqRegionService service;
 

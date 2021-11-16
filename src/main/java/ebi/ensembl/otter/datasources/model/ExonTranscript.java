@@ -1,5 +1,6 @@
 package ebi.ensembl.otter.datasources.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -11,7 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(schema = "exon_transcript")
 @IdClass(ExonTranscript.class)
-public class ExonTranscript {
+public class ExonTranscript implements Serializable {
 
 	private static final long serialVersionUID = 0;
 

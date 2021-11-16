@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -23,7 +24,7 @@ public class Gene {
 		return version;
 	}
 
-	@OneToMany(mappedBy = "geneId")
+	@OneToMany(mappedBy = "geneId", fetch = FetchType.EAGER)
 	private List<Transcript> transcripts;
 
 	public void setVersion(String version) {
@@ -71,7 +72,7 @@ public class Gene {
 	private Integer canonicalTranscriptId;
 
 	@Column(name = "stable_id")
-	private Integer stable_id;
+	private String stable_id;
 
 	@Column(name = "created_date", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -173,11 +174,11 @@ public class Gene {
 		this.canonicalTranscriptId = canonicalTranscriptId;
 	}
 
-	public Integer getStable_id() {
+	public String getStable_id() {
 		return stable_id;
 	}
 
-	public void setStable_id(Integer stable_id) {
+	public void setStable_id(String stable_id) {
 		this.stable_id = stable_id;
 	}
 
