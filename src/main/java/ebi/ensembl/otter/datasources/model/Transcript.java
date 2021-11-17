@@ -1,5 +1,6 @@
 package ebi.ensembl.otter.datasources.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,23 +11,43 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(schema = "transcript")
 public class Transcript {
-	
-	
 
-	public Transcript(Object transcriptId) {
+	public Transcript(Object transcriptId, Object biotype, Object analysisId, Object geneId, Object seqRegionId,
+			Object seqRegionStart, Object seqRegionEnd, Object seqRegionStrand, Object displayXrefId, Object source,
+			Object description, Object version, Boolean isCurrent, Object canonicalTranslationId, Object stableId) {
 		super();
 		this.transcriptId = Integer.valueOf(transcriptId.toString());
-		//z		//this.createdDate = createdDate.toString();
-		this.exons = exons;
-		//this.modifiedDate = modifiedDate.toString();
+		this.biotype = biotype.toString();
+		this.analysisId = Integer.valueOf(analysisId.toString());
+		this.geneId = Integer.valueOf(geneId.toString());
+		this.seqRegionId = Integer.valueOf(seqRegionId.toString());
+		this.seqRegionStart = Integer.valueOf(seqRegionStart.toString());
+		this.seqRegionEnd = Integer.valueOf(seqRegionEnd.toString());
+		this.seqRegionStrand = Integer.valueOf(seqRegionStrand.toString());
+		if (displayXrefId != null) {
+			this.displayXrefId = Integer.valueOf(displayXrefId.toString());
+		}
+		this.source = source.toString();
+		if (description != null) {
+			this.description = description.toString();
+		}
+		this.version = version.toString();
+		this.isCurrent = isCurrent;
+		if (canonicalTranslationId != null) {
+			this.canonicalTranslationId = canonicalTranslationId.toString();
+		}
+		this.stableId = stableId.toString();
+		// this.createdDate = createdDate.toString();
+		this.exons = new ArrayList<Exon>();
+		// this.modifiedDate = modifiedDate.toString();
 	}
 
 	public Transcript() {
@@ -67,12 +88,27 @@ public class Transcript {
 
 	@Column(name = "is_current")
 	private Boolean isCurrent;
+	
+	@Transient
+	private List<FeatureAttrib> attributes;
+
+	public List<FeatureAttrib> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(List<FeatureAttrib> attributes) {
+		this.attributes = attributes;
+	}
+
+	public Integer getSeqRegionStrand() {
+		return seqRegionStrand;
+	}
 
 	@Column(name = "canonical_translation_id")
 	private String canonicalTranslationId;
 
 	@Column(name = "stable_id")
-	private String stable_id;
+	private String stableId;
 
 	@Column(name = "created_date", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -190,23 +226,20 @@ public class Transcript {
 		this.canonicalTranslationId = canonicalTranslationId;
 	}
 
-	public String getStable_id() {
-		return stable_id;
+	public String getStableId() {
+		return stableId;
 	}
 
-	public void setStable_id(String stable_id) {
-		this.stable_id = stable_id;
+	public void setStableId(String stable_id) {
+		this.stableId = stable_id;
 	}
 
 	public Date getCreatedDate() {
 		return createdDate;
 	}
 
-	@ManyToMany( fetch = FetchType.EAGER)
-	@JoinTable(
-	  name = "exon_transcript", 
-	  joinColumns = @JoinColumn(name = "transcript_id"), 
-	  inverseJoinColumns = @JoinColumn(name = "exon_id"))
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "exon_transcript", joinColumns = @JoinColumn(name = "transcript_id"), inverseJoinColumns = @JoinColumn(name = "exon_id"))
 	private List<Exon> exons;
 
 	public List<Exon> getExons() {
