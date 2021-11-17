@@ -18,6 +18,16 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(schema = "transcript")
 public class Transcript {
+	
+	
+
+	public Transcript(Object transcriptId) {
+		super();
+		this.transcriptId = Integer.valueOf(transcriptId.toString());
+		//z		//this.createdDate = createdDate.toString();
+		this.exons = exons;
+		//this.modifiedDate = modifiedDate.toString();
+	}
 
 	public Transcript() {
 	}
@@ -44,7 +54,7 @@ public class Transcript {
 	private Integer seqRegionEnd;
 
 	@Column(name = "seq_region_strand")
-	private Integer seqRegionStrandt;
+	private Integer seqRegionStrand;
 
 	@Column(name = "display_xref_id")
 	private Integer displayXrefId;
@@ -59,7 +69,7 @@ public class Transcript {
 	private Boolean isCurrent;
 
 	@Column(name = "canonical_translation_id")
-	private Integer canonicalTranslationId;
+	private String canonicalTranslationId;
 
 	@Column(name = "stable_id")
 	private String stable_id;
@@ -117,11 +127,11 @@ public class Transcript {
 	}
 
 	public Integer getSeqRegionStrandt() {
-		return seqRegionStrandt;
+		return seqRegionStrand;
 	}
 
-	public void setSeqRegionStrandt(Integer seqRegionStrandt) {
-		this.seqRegionStrandt = seqRegionStrandt;
+	public void setSeqRegionStrand(Integer seqRegionStrand) {
+		this.seqRegionStrand = seqRegionStrand;
 	}
 
 	public Integer getDisplayXrefId() {
@@ -156,7 +166,7 @@ public class Transcript {
 		this.isCurrent = isCurrent;
 	}
 
-	public Integer getCanonicalTranslationId() {
+	public String getCanonicalTranslationId() {
 		return canonicalTranslationId;
 	}
 
@@ -176,7 +186,7 @@ public class Transcript {
 		this.version = version;
 	}
 
-	public void setCanonicalTranslationId(Integer canonicalTranslationId) {
+	public void setCanonicalTranslationId(String canonicalTranslationId) {
 		this.canonicalTranslationId = canonicalTranslationId;
 	}
 

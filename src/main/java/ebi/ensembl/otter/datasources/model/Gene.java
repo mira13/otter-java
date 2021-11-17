@@ -11,6 +11,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(schema = "gene")
@@ -49,6 +50,17 @@ public class Gene {
 	@Id
 	@Column(name = "gene_id")
 	private Integer geneId;
+	
+	@Transient
+	private List<FeatureAttrib> attributes;
+
+	public List<FeatureAttrib> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(List<FeatureAttrib> attributes) {
+		this.attributes = attributes;
+	}
 
 	public String getVersion() {
 		return version;
