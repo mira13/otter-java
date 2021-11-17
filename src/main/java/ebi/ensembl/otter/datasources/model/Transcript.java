@@ -19,6 +19,9 @@ import javax.persistence.TemporalType;
 @Table(schema = "transcript")
 public class Transcript {
 
+	public Transcript() {
+	}
+
 	@Id
 	@Column(name = "transcript_id")
 	private Integer transcriptId;

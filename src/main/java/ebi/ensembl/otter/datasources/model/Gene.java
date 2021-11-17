@@ -15,6 +15,36 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(schema = "gene")
 public class Gene {
+ 
+	
+	public Gene() {
+	}
+
+	public Gene(Object geneId, List<Transcript> transcripts, Object biotype, Object analysisId, Object seqRegionId,
+			Object seqRegionStart, Object seqRegionEnd, Object seqRegionStrand, Object displayXrefId,
+			Object source, Object description, Object version, Boolean isCurrent, Object canonicalTranscriptId,
+			Object stable_id, Object createdDate, Object modifiedDate) {
+		super();
+		this.geneId = Integer.valueOf((geneId.toString()));
+		this.transcripts = transcripts;
+		this.biotype = biotype.toString();
+		this.analysisId = Integer.valueOf(analysisId.toString());
+		this.seqRegionId = Integer.valueOf(seqRegionId.toString());
+		this.seqRegionStart = Integer.valueOf(seqRegionStart.toString());
+		this.seqRegionEnd = Integer.valueOf(seqRegionEnd.toString());
+		this.seqRegionStrand = Integer.valueOf(seqRegionStrand.toString());
+		if (displayXrefId != null) {
+			this.displayXrefId = Integer.valueOf(displayXrefId.toString());
+		}
+		this.source = source.toString();
+		this.description = description.toString();
+		this.version = version.toString();
+	    this.isCurrent = isCurrent;
+		this.canonicalTranscriptId = canonicalTranscriptId.toString();
+		this.stable_id = stable_id.toString();
+		//this.createdDate = (Date) createdDate;
+		//this.modifiedDate = (Date) modifiedDate;
+	}
 
 	@Id
 	@Column(name = "gene_id")
@@ -54,7 +84,7 @@ public class Gene {
 	private Integer seqRegionEnd;
 
 	@Column(name = "seq_region_strand")
-	private Integer seqRegionStrandt;
+	private Integer seqRegionStrand;
 
 	@Column(name = "display_xref_id")
 	private Integer displayXrefId;
@@ -69,7 +99,7 @@ public class Gene {
 	private Boolean isCurrent;
 
 	@Column(name = "canonical_transcript_id")
-	private Integer canonicalTranscriptId;
+	private String canonicalTranscriptId;
 
 	@Column(name = "stable_id")
 	private String stable_id;
@@ -126,12 +156,12 @@ public class Gene {
 		this.seqRegionEnd = seqRegionEnd;
 	}
 
-	public Integer getSeqRegionStrandt() {
-		return seqRegionStrandt;
+	public Integer getSeqRegionStrand() {
+		return seqRegionStrand;
 	}
 
-	public void setSeqRegionStrandt(Integer seqRegionStrandt) {
-		this.seqRegionStrandt = seqRegionStrandt;
+	public void setSeqRegionStrand(Integer seqRegionStrand) {
+		this.seqRegionStrand = seqRegionStrand;
 	}
 
 	public Integer getDisplayXrefId() {
@@ -166,11 +196,11 @@ public class Gene {
 		this.isCurrent = isCurrent;
 	}
 
-	public Integer getCanonicalTranscriptId() {
+	public String getCanonicalTranscriptId() {
 		return canonicalTranscriptId;
 	}
 
-	public void setCanonicalTranscriptId(Integer canonicalTranscriptId) {
+	public void setCanonicalTranscriptId(String canonicalTranscriptId) {
 		this.canonicalTranscriptId = canonicalTranscriptId;
 	}
 

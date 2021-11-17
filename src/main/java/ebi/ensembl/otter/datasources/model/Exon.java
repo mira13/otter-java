@@ -12,6 +12,10 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(schema = "exon")
 public class Exon {
+	
+
+	public Exon() {
+	}
 
 	@Id
 	@Column(name = "exon_id")
