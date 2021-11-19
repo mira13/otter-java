@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ebi.ensembl.otter.SeqRegionService;
 import ebi.ensembl.otter.datasources.model.CoordSystem;
 import ebi.ensembl.otter.datasources.model.SeqRegion;
-import ebi.ensembl.otter.datasources.model.SeqRegionAttrib;
+import ebi.ensembl.otter.datasources.model.SeqRegionAttribute;
 import ebi.ensembl.otter.webAPIControllers.model.otter.DataSet;
 
 @RestController
@@ -46,7 +46,7 @@ public class SeqRegionController {
 
 			description = "";
 			write_access = "";
-			for (SeqRegionAttrib attr : region.getAttributes()) {
+			for (SeqRegionAttribute attr : region.getAttributes()) {
 				if (attr.getAttribTypeId().equals(128)) {
 					write_access = attr.getValue();
 				}

@@ -1,14 +1,15 @@
 package ebi.ensembl.otter.datasources.model;
 
-public class FeatureAttrib {
+public class FeatureAttribute {
 	
 	private String name;
 	
 	private String value;
 
-	public FeatureAttrib(Object name, Object value) {
-		this.name = name.toString();
-		this.value = value.toString();
+	public FeatureAttribute(Object attribItem, Object attribItem2) {
+		super();
+		this.name = attribItem.toString();
+		this.value = attribItem2.toString();
 	}
 
 	public String getName() {

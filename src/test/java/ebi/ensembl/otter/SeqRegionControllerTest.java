@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ebi.ensembl.otter.datasources.model.Author;
 import ebi.ensembl.otter.datasources.model.CoordSystem;
 import ebi.ensembl.otter.datasources.model.SeqRegion;
-import ebi.ensembl.otter.datasources.model.SeqRegionAttrib;
+import ebi.ensembl.otter.datasources.model.SeqRegionAttribute;
 import ebi.ensembl.otter.datasources.model.SliceLock;
 import ebi.ensembl.otter.webAPIControllers.SeqRegionController;
 
@@ -39,17 +39,17 @@ public class SeqRegionControllerTest {
 		List<SeqRegion> seqRegionList = new ArrayList<SeqRegion>();
 
 		SeqRegion seqRegion = new SeqRegion();
-		SeqRegionAttrib seqRegionAttribDescription = new SeqRegionAttrib();
+		SeqRegionAttribute seqRegionAttribDescription = new SeqRegionAttribute();
 		seqRegionAttribDescription.setAttribTypeId(49);
 		seqRegionAttribDescription.setSeqRegionId(20);
 		seqRegionAttribDescription.setValue("test description");
 
-		SeqRegionAttrib seqRegionAttribWriteAccess = new SeqRegionAttrib();
+		SeqRegionAttribute seqRegionAttribWriteAccess = new SeqRegionAttribute();
 		seqRegionAttribWriteAccess.setAttribTypeId(128);
 		seqRegionAttribWriteAccess.setSeqRegionId(20);
 		seqRegionAttribWriteAccess.setValue("1");
 
-		SeqRegionAttrib seqRegionAttribHidden = new SeqRegionAttrib();
+		SeqRegionAttribute seqRegionAttribHidden = new SeqRegionAttribute();
 		seqRegionAttribHidden.setAttribTypeId(48);
 		seqRegionAttribHidden.setSeqRegionId(20);
 		seqRegionAttribHidden.setValue("0");

@@ -23,7 +23,7 @@ public class Gene {
 
 	public Gene(Object geneId, List<Transcript> transcripts, Object biotype, Object analysisId, Object seqRegionId,
 			Object seqRegionStart, Object seqRegionEnd, Object seqRegionStrand, Object displayXrefId,
-			Object source, Object description, Object version, Boolean isCurrent, Object canonicalTranscriptId,
+			Object source, Object description, Object version, Object isCurrent, Object canonicalTranscriptId,
 			Object stable_id, Object createdDate, Object modifiedDate) {
 		super();
 		this.geneId = Integer.valueOf((geneId.toString()));
@@ -40,11 +40,16 @@ public class Gene {
 		this.source = source.toString();
 		this.description = description.toString();
 		this.version = version.toString();
-	    this.isCurrent = isCurrent;
+		if (isCurrent.toString().equals("1")) {
+			this.isCurrent = true;
+		} else {
+			this.isCurrent = false;
+		}
+	    
 		this.canonicalTranscriptId = canonicalTranscriptId.toString();
 		this.stable_id = stable_id.toString();
-		//this.createdDate = (Date) createdDate;
-		//this.modifiedDate = (Date) modifiedDate;
+		this.createdDate = (Date) createdDate; // probably we just need that field as string
+		this.modifiedDate = (Date) modifiedDate; // not sure, as no usage yet
 	}
 
 	@Id
@@ -52,13 +57,13 @@ public class Gene {
 	private Integer geneId;
 	
 	@Transient
-	private List<FeatureAttrib> attributes;
+	private List<FeatureAttribute> attributes;
 
-	public List<FeatureAttrib> getAttributes() {
+	public List<FeatureAttribute> getAttributes() {
 		return attributes;
 	}
 
-	public void setAttributes(List<FeatureAttrib> attributes) {
+	public void setAttributes(List<FeatureAttribute> attributes) {
 		this.attributes = attributes;
 	}
 

@@ -12,9 +12,32 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(schema = "exon")
 public class Exon {
-	
 
 	public Exon() {
+	}
+
+	public Exon(Object exontId, Object seqRegionId, Object seqRegionStart, Object seqRegionEnd, Object seqRegionStrand,
+			Object phase, Object end_phase, Object version, Boolean isCurrent, Object isConstitutive,
+			Object stable_id) {
+		super();
+		this.exontId = Integer.valueOf(exontId.toString());
+		this.seqRegionId = Integer.valueOf(seqRegionId.toString());
+		this.seqRegionStart = Integer.valueOf(seqRegionStart.toString());
+		this.seqRegionEnd = Integer.valueOf(seqRegionEnd.toString());
+		this.seqRegionStrand = Integer.valueOf(seqRegionStrand.toString());
+		this.phase = Integer.valueOf(phase.toString());
+		this.end_phase = Integer.valueOf(end_phase.toString());
+		this.version = version.toString();
+		this.isCurrent = isCurrent;
+		if (isConstitutive.toString().equals("1")) {
+			this.isConstitutive = true;
+		} else {
+			this.isConstitutive = false;
+		}
+			
+		this.stable_id = stable_id.toString();
+		// this.createdDate = createdDate.toString();
+		// this.modifiedDate = modifiedDate.toString();
 	}
 
 	@Id
@@ -31,7 +54,7 @@ public class Exon {
 	private Integer seqRegionEnd;
 
 	@Column(name = "seq_region_strand")
-	private Integer seqRegionStrandt;
+	private Integer seqRegionStrand;
 
 	@Column(name = "phase")
 	private Integer phase;
@@ -41,20 +64,20 @@ public class Exon {
 
 	private String version;
 
-	@Column (name = "is_current")
+	@Column(name = "is_current")
 	private Boolean isCurrent;
 
-	@Column (name = "is_constitutive")
+	@Column(name = "is_constitutive")
 	private Boolean isConstitutive;
 
-	@Column (name = "stable_id")
+	@Column(name = "stable_id")
 	private String stable_id;
 
-	@Column (name = "created_date", columnDefinition="DATETIME")
+	@Column(name = "created_date", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
 
-	@Column (name = "modified_date", columnDefinition="DATETIME")
+	@Column(name = "modified_date", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date modifiedDate;
 
@@ -82,12 +105,12 @@ public class Exon {
 		this.seqRegionEnd = seqRegionEnd;
 	}
 
-	public Integer getSeqRegionStrandt() {
-		return seqRegionStrandt;
+	public Integer getSeqRegionStrand() {
+		return seqRegionStrand;
 	}
 
-	public void setSeqRegionStrandt(Integer seqRegionStrandt) {
-		this.seqRegionStrandt = seqRegionStrandt;
+	public void setSeqRegionStrand(Integer seqRegionStrand) {
+		this.seqRegionStrand = seqRegionStrand;
 	}
 
 	public Boolean getIsCurrent() {

@@ -8,17 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import ebi.ensembl.otter.datasources.model.Exon;
-import ebi.ensembl.otter.datasources.model.FeatureAttrib;
+import ebi.ensembl.otter.datasources.model.FeatureAttribute;
 import ebi.ensembl.otter.datasources.model.Gene;
+import ebi.ensembl.otter.datasources.model.GeneAttribute;
 import ebi.ensembl.otter.datasources.model.Transcript;
+import ebi.ensembl.otter.datasources.model.TranscriptAttribute;
 
 public interface GeneRepository extends JpaRepository<Gene, Integer> {
 
 	public List<Gene> findAll();
 
 	@Query(value = """
-			select  g.gene_id, g.biotype,  
-			g.analysis_id, g.seq_region_id, 
+			select  g.gene_id, g.biotype,
+			g.analysis_id, g.seq_region_id,
 			g.seq_region_start, g.seq_region_end,
 			g.seq_region_strand, g.display_xref_id,
 			g.source, g.description,
@@ -27,11 +29,15 @@ public interface GeneRepository extends JpaRepository<Gene, Integer> {
 			g.created_date, g.modified_date,
 			t.transcript_id, t.analysis_id as transcriptAnalysis_id,
 			t.seq_region_start as transcriptSeqRegionStart, t.seq_region_end as transcriptSeqRegionEnd,
-			t.display_xref_id as transcriptXref, t.source as transcriptSource, 
+			t.display_xref_id as transcriptXref, t.source as transcriptSource,
 			t.biotype as transcriptBiotype, t.description as transcriptDescription,
-			t.canonical_translation_id, 
+			t.canonical_translation_id,
 			t.stable_id as transcriptStableId, t.version as transcriptVersion,
-			t.created_date as transcriptCreatedDate, t.modified_date as transcriptModifiedDate
+			t.created_date as transcriptCreatedDate, t.modified_date as transcriptModifiedDate,
+			e.exon_id, e.version as exonVersion,
+			e.phase, e.end_phase, 
+			e.is_constitutive, e.stable_id as exonStableId,
+			e.seq_region_start as ExonSeqRegionStart, e.seq_region_end as exonSeqRegionEnd
 			from gene g
 			JOIN transcript t
 			ON t.gene_id = g.gene_id
@@ -47,7 +53,7 @@ public interface GeneRepository extends JpaRepository<Gene, Integer> {
 			AND e.is_current=1
 			ORDER BY g.gene_id, t.transcript_id
 			""", nativeQuery = true)
-	public List<Object[]> findBySeqRegionIdAndStartAndEnd(@Param("seqRegionId") Integer seqRegionId,
+	public List<Object[]> findBySeqRegionIdAndStartAndEndUnparsed(@Param("seqRegionId") Integer seqRegionId,
 			@Param("seqRegionStart") Integer seqRegionStart, @Param("seqRegionEnd") Integer seqRegionEnd);
 
 	@Query(value = """
@@ -56,8 +62,56 @@ public interface GeneRepository extends JpaRepository<Gene, Integer> {
 			ON attrib_type.attrib_type_id = gene_attrib.attrib_type_id
 			where gene_id = :geneId
 			""", nativeQuery = true)
-	public List<Object[]> getGeneAttribById(@Param("geneId") Integer geneId);
-
+	public List<Object[]> getGeneAttribByIdRaw(@Param("geneId") Integer geneId);
+	
+	public default List<FeatureAttribute> getGeneAttribById(Integer geneId) {
+		List <FeatureAttribute> featureList = new ArrayList<FeatureAttribute>();
 		
+		List<Object[]> rawList = this.getGeneAttribByIdRaw(geneId);
+		for (Object[] attribItem : rawList) {
+			featureList.add(new FeatureAttribute(attribItem[0], attribItem[1]));
+		}	
+		return featureList;		
+	}
+	
+	public default List<Gene> findBySeqRegionIdAndStartAndEnd (Integer seqRegionId,
+			Integer seqRegionStart, Integer seqRegionEnd) {
+		
+		List<Object[]> rawList = this.findBySeqRegionIdAndStartAndEndUnparsed(seqRegionId, seqRegionStart, seqRegionEnd);
+
+		List<Gene> genes = new ArrayList<>();
+		Gene gene = new Gene();
+		Transcript transcript = new Transcript();
+		Exon exon = new Exon();
+
+		int geneIndex = 0;
+		int transcriptIndex = 0;
+		
+		for (Object[] item : rawList) {
+
+			if (genes.isEmpty() || !item[0].toString().equals(gene.getGeneId().toString())) {
+				gene = new Gene(item[0], new ArrayList<Transcript>(), item[1], item[2], item[3], item[4], item[5],
+						item[6], item[7], item[8], item[9], item[10], true, item[12], item[13], item[14], item[15]);
+				gene.setAttributes(this.getGeneAttribById(gene.getGeneId()));
+				genes.add(gene);
+
+			}
+			geneIndex = genes.size() - 1;
+			transcriptIndex = genes.get(geneIndex).getTranscripts().size() - 1;
+
+			if (genes.get(geneIndex).getTranscripts().isEmpty() || !item[16].toString()
+					.equals(genes.get(geneIndex).getTranscripts().get(transcriptIndex).getTranscriptId().toString())) {
+				transcript = new Transcript(item[16], item[22], item[17], item[0], item[3], item[18], item[19], item[6],
+						item[20], item[21], item[23], item[26], true, item[24], item[25]);
+				genes.get(geneIndex).getTranscripts().add(transcript);
+			}
+
+			transcriptIndex = genes.get(geneIndex).getTranscripts().size() - 1;
+			exon = new Exon(item[29], item[3], item[35], item[36], item[6], item[31], item[32],
+					item[30], true, item[33], item[34]);
+			genes.get(geneIndex).getTranscripts().get(transcriptIndex).getExons().add(exon);
+		}
+		return genes;
+	}
 
 }

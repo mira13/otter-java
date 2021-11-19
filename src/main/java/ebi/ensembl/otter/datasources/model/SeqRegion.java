@@ -24,7 +24,7 @@ public class SeqRegion {
 	private int length;
 
 	@OneToMany(mappedBy = "seqRegionId")
-	private List<SeqRegionAttrib> attributes;
+	private List<SeqRegionAttribute> attributes;
 	
 	public int getSeqRegionId() {
 		return seqRegionId;
@@ -58,11 +58,11 @@ public class SeqRegion {
 		this.length = length;
 	}
 
-	public List<SeqRegionAttrib> getAttributes() {
+	public List<SeqRegionAttribute> getAttributes() {
 		return attributes;
 	}
 
-	public void setAttributes(List<SeqRegionAttrib> attributes) {
+	public void setAttributes(List<SeqRegionAttribute> attributes) {
 		this.attributes = attributes;
 	}
 

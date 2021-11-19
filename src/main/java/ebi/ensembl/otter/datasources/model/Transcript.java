@@ -45,9 +45,12 @@ public class Transcript {
 			this.canonicalTranslationId = canonicalTranslationId.toString();
 		}
 		this.stableId = stableId.toString();
-		// this.createdDate = createdDate.toString();
-		this.exons = new ArrayList<Exon>();
+		
+		// I am not sure if the date is used anywhere in otter, so this is commented for now.
+		// For ensebml full constructor will be created;
+		// this.createdDate = createdDate.toString();		
 		// this.modifiedDate = modifiedDate.toString();
+		this.exons = new ArrayList<Exon>();
 	}
 
 	public Transcript() {
@@ -90,13 +93,13 @@ public class Transcript {
 	private Boolean isCurrent;
 	
 	@Transient
-	private List<FeatureAttrib> attributes;
+	private List<FeatureAttribute> attributes;
 
-	public List<FeatureAttrib> getAttributes() {
+	public List<FeatureAttribute> getAttributes() {
 		return attributes;
 	}
 
-	public void setAttributes(List<FeatureAttrib> attributes) {
+	public void setAttributes(List<FeatureAttribute> attributes) {
 		this.attributes = attributes;
 	}
 

@@ -11,8 +11,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(schema = "seq_region_attrib")
-@IdClass(SeqRegionAttrib.class)
-public class SeqRegionAttrib implements Serializable {
+@IdClass(SeqRegionAttribute.class)
+public class SeqRegionAttribute implements Serializable {
 
 	private static final long serialVersionUID = 0;
 
@@ -31,9 +31,9 @@ public class SeqRegionAttrib implements Serializable {
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
-		if (!(o instanceof SeqRegionAttrib))
+		if (!(o instanceof SeqRegionAttribute))
 			return false;
-		SeqRegionAttrib attr = (SeqRegionAttrib) o;
+		SeqRegionAttribute attr = (SeqRegionAttribute) o;
 		return Objects.equals(getSeqRegionId(), attr.getSeqRegionId())
 				&& Objects.equals(getAttribTypeId(), attr.getAttribTypeId())
 				&& Objects.equals(getValue(), attr.getValue());

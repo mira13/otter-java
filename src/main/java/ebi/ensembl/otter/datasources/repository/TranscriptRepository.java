@@ -1,11 +1,13 @@
 package ebi.ensembl.otter.datasources.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import ebi.ensembl.otter.datasources.model.FeatureAttribute;
 import ebi.ensembl.otter.datasources.model.SliceLock;
 import ebi.ensembl.otter.datasources.model.Transcript;
 
@@ -24,10 +26,17 @@ public interface TranscriptRepository extends JpaRepository<Transcript, Integer>
 			JOIN attrib_type
 			ON attrib_type.attrib_type_id = transcript_attrib.attrib_type_id
 			WHERE transcript_id = :transcriptId
-			AND (attrib_type.name = "name"
-			OR attrib_type.name = "type")
 			""", nativeQuery = true)
-	public List<Object[]> getTranscriptAttribById(@Param("transcriptId") Integer geneId);
+	public List<Object[]> getTranscriptAttribByIdRaw(@Param("transcriptId") Integer geneId);
 
+	public default List<FeatureAttribute> getTranscriptAttribById(Integer transcriptId) {
+		List <FeatureAttribute> featureList = new ArrayList<FeatureAttribute>();
+		
+		List<Object[]> rawList = this.getTranscriptAttribByIdRaw(transcriptId);
+		for (Object[] attribItem : rawList) {
+			featureList.add(new FeatureAttribute(attribItem[0], attribItem[1]));
+		}	
+		return featureList;		
+	}
 
 }

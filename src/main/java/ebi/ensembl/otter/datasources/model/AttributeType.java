@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class AttribType {
+public class AttributeType {
 	
 	@Id
 	@Column (name = "attrib_type_id")
