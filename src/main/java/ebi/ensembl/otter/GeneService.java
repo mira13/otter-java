@@ -34,7 +34,7 @@ public class GeneService {
 				transcripts.get(j).setAttributes(transcriptAttributesList);
 			}			
 		}
-
+// TODO: truncate trascripts, fetch transcr evidences
 		return rawList;
 
 	}

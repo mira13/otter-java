@@ -18,7 +18,7 @@ import ebi.ensembl.otter.datasources.model.Gene;
 @RestController
 @CrossOrigin
 @RequestMapping("/gene")
-public class GeneContrloller {
+public class GeneController {
 
 	@Autowired
 	GeneService service;
