@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import ebi.ensembl.otter.datasources.model.SeqRegion;
+import ebi.ensembl.otter.datasources.model.SliceLock;
 
 public interface SeqRegionRepository extends JpaRepository<SeqRegion, Integer> {
 
@@ -32,6 +33,19 @@ public interface SeqRegionRepository extends JpaRepository<SeqRegion, Integer> {
 			;
 			""", nativeQuery = true)
 	public List<SeqRegion> findVisibleByCoordSystemId(@Param("cs") Integer cs);
+	
+	@Query(value = """
+			select* from seq_region
+			JOIN coord_system
+			ON coord_system.coord_system_id = seq_region.coord_system_id
+			WHERE
+			coord_system.name= :csname and coord_system.version= :csversion
+			AND seq_region.name= :name
+			LiMit 1
+			""",  nativeQuery = true)
+	public SeqRegion getByNameAndCoordSystem(@Param("name") String name, @Param("csname") String csname,
+			@Param("csversion") String csversion);
+
 
 }
 

@@ -12,23 +12,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ebi.ensembl.otter.GeneService;
+import ebi.ensembl.otter.RegionService;
 import ebi.ensembl.otter.datasources.model.Gene;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/gene")
-public class GeneController {
+public class RegionController {
 
 	@Autowired
-	GeneService service;
+	RegionService service;
 
 	@PostMapping("/getBySeqRegionId")
 	public List<Gene> findAllBySeqRegionId(@RequestBody String body) throws JSONException {
 
 		JSONObject jObject = new JSONObject(body);
-		return service.findBySeqRegionIdAndStartAndEnd(
-				Integer.valueOf(jObject.getString("seqRegionId")),
+		return service.getByCoordSysAndRegionNameAndStartAndEnd(
+				jObject.getString("csName"),
+				jObject.getString("csVersion"),
+				jObject.getString("seqRegionName"),
 				Integer.valueOf(jObject.getString("seqRegionStart")),
 				Integer.valueOf(jObject.getString("seqRegionEnd"))
 				);

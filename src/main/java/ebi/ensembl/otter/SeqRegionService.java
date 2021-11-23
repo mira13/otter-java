@@ -51,10 +51,15 @@ public class SeqRegionService {
 
 	/**
 	 * Internal service method that retrieves coordinate system with rank 1
-	 * 
+	 *
 	 * @return CoordSystem entry with rank 1
 	 */
 	public CoordSystem getTopCoordSystem() {
 		return coordSystemRepository.findByRank(1).get(0);
 	}
+	
+	public SeqRegion getNameAndCoordSystem(String name, String csName, String csVersion) {
+		return seqRegionRepository.getByNameAndCoordSystem(name, csName, csVersion);
+	}
+	
 }
