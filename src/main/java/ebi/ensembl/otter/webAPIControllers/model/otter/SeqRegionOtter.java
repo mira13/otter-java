@@ -1,6 +1,6 @@
 package ebi.ensembl.otter.webAPIControllers.model.otter;
 
-public class DataSet {
+public class SeqRegionOtter {
 
 	private String name;
 
@@ -8,7 +8,7 @@ public class DataSet {
 
 	private String coord_system_version;
 
-	public DataSet(String name, String description, String coord_system_version, String is_hidden, String write_access,
+	public SeqRegionOtter(String name, String description, String coord_system_version, String is_hidden, String write_access,
 			String coord_system_name) {
 		super();
 		this.name = name;

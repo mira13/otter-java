@@ -6,10 +6,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ebi.ensembl.otter.datasources.model.Evidence;
 import ebi.ensembl.otter.datasources.model.Exon;
 import ebi.ensembl.otter.datasources.model.FeatureAttribute;
 import ebi.ensembl.otter.datasources.model.Gene;
 import ebi.ensembl.otter.datasources.model.Transcript;
+import ebi.ensembl.otter.datasources.repository.EvidenceRepository;
 import ebi.ensembl.otter.datasources.repository.GeneRepository;
 import ebi.ensembl.otter.datasources.repository.TranscriptRepository;
 
@@ -21,6 +23,9 @@ public class RegionService {
 
 	@Autowired
 	TranscriptRepository transcriptRepository;
+	
+	@Autowired
+	EvidenceRepository evidenceRepository;
 	
 	@Autowired
 	SeqRegionService seqRegionService;
@@ -65,9 +70,14 @@ public class RegionService {
 		for (int i = 0; i < rawList.size(); i++ ) {
 			List <Transcript> transcripts = rawList.get(i).getTranscripts();
 			for (int j = 0; j < transcripts.size(); j++) {
+				Integer transcriptId = transcripts.get(j).getTranscriptId();
+
 				List<FeatureAttribute> transcriptAttributesList = transcriptRepository
-						.getTranscriptAttribById(transcripts.get(j).getTranscriptId());						
+						.getTranscriptAttribById(transcriptId);						
 				transcripts.get(j).setAttributes(transcriptAttributesList);
+				List <Evidence> evidenceList = evidenceRepository
+						.findByTranscriptId(transcriptId);
+				transcripts.get(j).setEvidence(evidenceList);
 			}			
 		}
 		return rawList;

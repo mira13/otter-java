@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -93,7 +94,18 @@ public class Transcript {
 	private Boolean isCurrent;
 	
 	@Transient
-	private List<FeatureAttribute> attributes;
+	private List<FeatureAttribute> attributes;	
+	
+	@OneToMany(mappedBy = "transcriptId", fetch = FetchType.EAGER)
+	private List<Evidence> evidence;
+
+	public List<Evidence> getEvidence() {
+		return evidence;
+	}
+
+	public void setEvidence(List<Evidence> evidence) {
+		this.evidence = evidence;
+	}
 
 	public List<FeatureAttribute> getAttributes() {
 		return attributes;

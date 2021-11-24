@@ -17,13 +17,13 @@ import ebi.ensembl.otter.datasources.model.Gene;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/gene")
+@RequestMapping("/region")
 public class RegionController {
 
 	@Autowired
 	RegionService service;
 
-	@PostMapping("/getBySeqRegionId")
+	@PostMapping("/getBySeqRegionNameAndCoordSystem")
 	public List<Gene> findAllBySeqRegionId(@RequestBody String body) throws JSONException {
 
 		JSONObject jObject = new JSONObject(body);

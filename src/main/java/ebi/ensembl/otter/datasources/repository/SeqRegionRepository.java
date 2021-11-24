@@ -35,13 +35,13 @@ public interface SeqRegionRepository extends JpaRepository<SeqRegion, Integer> {
 	public List<SeqRegion> findVisibleByCoordSystemId(@Param("cs") Integer cs);
 	
 	@Query(value = """
-			select* from seq_region
+			select * from seq_region
 			JOIN coord_system
 			ON coord_system.coord_system_id = seq_region.coord_system_id
 			WHERE
-			coord_system.name= :csname and coord_system.version= :csversion
-			AND seq_region.name= :name
-			LiMit 1
+			coord_system.name = :csname and coord_system.version= :csversion
+			AND seq_region.name = :name
+			LIMIT 1
 			""",  nativeQuery = true)
 	public SeqRegion getByNameAndCoordSystem(@Param("name") String name, @Param("csname") String csname,
 			@Param("csversion") String csversion);

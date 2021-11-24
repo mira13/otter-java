@@ -14,7 +14,7 @@ import ebi.ensembl.otter.SeqRegionService;
 import ebi.ensembl.otter.datasources.model.CoordSystem;
 import ebi.ensembl.otter.datasources.model.SeqRegion;
 import ebi.ensembl.otter.datasources.model.SeqRegionAttribute;
-import ebi.ensembl.otter.webAPIControllers.model.otter.DataSet;
+import ebi.ensembl.otter.webAPIControllers.model.otter.SeqRegionOtter;
 
 @RestController
 @CrossOrigin
@@ -33,9 +33,9 @@ public class SeqRegionController {
 	 * @throws JSONException
 	 */
 	@GetMapping("/topVisible")
-	public List<DataSet> findAllTopRankSeqRegionsWithVisibleAttrib() throws JSONException {
+	public List<SeqRegionOtter> findAllTopRankSeqRegionsWithVisibleAttrib() throws JSONException {
 		List<SeqRegion> seqRegionList = service.getOtterDataSets();
-		List<DataSet> dataSetList = new ArrayList<>();
+		List<SeqRegionOtter> dataSetList = new ArrayList<>();
 		CoordSystem cs = service.getTopCoordSystem();
 		String csName = cs.getName();
 		String csVersion = cs.getVersion();
@@ -54,7 +54,7 @@ public class SeqRegionController {
 					description = attr.getValue();
 				}
 			}
-			dataSetList.add(new DataSet(region.getName(), description, csVersion, "0", write_access, csName));
+			dataSetList.add(new SeqRegionOtter(region.getName(), description, csVersion, "0", write_access, csName));
 
 		}
 
