@@ -25,7 +25,7 @@ public interface SliceLockRepository extends JpaRepository<SliceLock, Integer> {
 			coord_system.name= :csname and coord_system.version= :csversion
 			AND seq_region.name= :name
 			AND slice_lock.active != \"free\" ;
-			""",  nativeQuery = true)
+			""", nativeQuery = true)
 	public List<SliceLock> getLocksByCoordSystemAndName(@Param("csname") String csname,
 			@Param("csversion") String csversion, @Param("name") String name);
 

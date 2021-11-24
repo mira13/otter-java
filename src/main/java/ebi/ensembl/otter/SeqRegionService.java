@@ -14,7 +14,7 @@ import ebi.ensembl.otter.datasources.repository.SeqRegionRepository;
 /**
  * Seq region service provide endpoints to work with seq_region table and
  * related dependent tables
- * 
+ *
  * @author Mira
  *
  */
@@ -26,14 +26,14 @@ public class SeqRegionService {
 	@Autowired
 	private SeqRegionRepository seqRegionRepository;
 
-	private List<SeqRegion> topDatasetCache = new ArrayList<SeqRegion>();
+	private List<SeqRegion> topDatasetCache = new ArrayList<>();
 
 	/**
 	 * The method is used to get top-level list of chromosomes, it uses cached value
 	 * as soon as top level list is changed relatively rare - ones in half a year or
 	 * less, so we don't need to really generate it every time. For now to empty the
 	 * cache there is no endpoint, and application should be restarted to free cache
-	 * 
+	 *
 	 * @return list of top level regions, for in otter-client initial db list.
 	 */
 	public List<SeqRegion> getOtterDataSets() {
@@ -57,9 +57,9 @@ public class SeqRegionService {
 	public CoordSystem getTopCoordSystem() {
 		return coordSystemRepository.findByRank(1).get(0);
 	}
-	
+
 	public SeqRegion getNameAndCoordSystem(String name, String csName, String csVersion) {
 		return seqRegionRepository.getByNameAndCoordSystem(name, csName, csVersion);
 	}
-	
+
 }

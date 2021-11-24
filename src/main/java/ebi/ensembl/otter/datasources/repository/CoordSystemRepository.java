@@ -11,6 +11,6 @@ public interface CoordSystemRepository extends JpaRepository<CoordSystem, Intege
 	public List<CoordSystem> findAll();
 
 	public List<CoordSystem> findByNameAndVersion(String name, String version);
-	
+
 	public List<CoordSystem> findByRank(int rank);
 }

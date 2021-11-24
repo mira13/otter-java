@@ -1,16 +1,18 @@
 package ebi.ensembl.otter;
 
-import ebi.ensembl.otter.datasources.model.SliceLock;
-import ebi.ensembl.otter.datasources.repository.SliceLockRepository;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import ebi.ensembl.otter.datasources.model.SliceLock;
+import ebi.ensembl.otter.datasources.repository.SliceLockRepository;
 
 /**
  * Otter lock system support. Currently otter client works with local database,
  * so when data is loaded and worked on locally - remote copy is locked, this
  * service provides locks endpoints
- * 
+ *
  * @author Mira
  *
  */
@@ -21,7 +23,7 @@ public class SliceLockService {
 	private SliceLockRepository sliceLockRepository;
 
 	/**
-	 * 
+	 *
 	 * @param csName    - coordinate system name: chromosome, contig, etc. (depends
 	 *                  on db)
 	 * @param csVersion - coordinate system version: like GRCm39
