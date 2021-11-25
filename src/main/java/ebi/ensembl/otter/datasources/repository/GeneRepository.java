@@ -97,7 +97,6 @@ System.out.println(item[0]);
 			if (genes.isEmpty() || !item[0].toString().equals(gene.getGeneId().toString())) {
 				gene = new Gene(item[0], new ArrayList<Transcript>(), item[1], item[2], item[3], item[4], item[5],
 						item[6], item[7], item[8], item[9], item[10], true, item[11], item[12], item[14], item[15]);
-				gene.setAttributes(this.getGeneAttribById(gene.getGeneId()));
 				genes.add(gene);
 
 			}

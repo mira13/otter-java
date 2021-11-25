@@ -8,8 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -17,10 +17,22 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ebi.ensembl.otter.datasources.repository.TranscriptRepository;
+
 @Entity
 @Table(schema = "transcript")
 public class Transcript {
 
+	@Transient
+	@Autowired
+	TranscriptRepository transcriptRepository;
+
+	/*
+	 * This constructor is used in region fetch, when all transcripts are
+	 * fetched and filled in gene
+	 */
 	public Transcript(Object transcriptId, Object biotype, Object analysisId, Object geneId, Object seqRegionId,
 			Object seqRegionStart, Object seqRegionEnd, Object seqRegionStrand, Object displayXrefId, Object source,
 			Object description, Object version, Boolean isCurrent, Object canonicalTranslationId, Object stableId) {
@@ -46,17 +58,25 @@ public class Transcript {
 			this.canonicalTranslationId = canonicalTranslationId.toString();
 		}
 		this.stableId = stableId.toString();
-		
-		// I am not sure if the date is used anywhere in otter, so this is commented for now.
-		// For ensebml full constructor will be created;
-		// this.createdDate = createdDate.toString();		
+		// I am not sure if the date is used anywhere, so this is commented for
+		// now.
+		//  Full constructor will be created later;
+		// this.createdDate = createdDate.toString();
 		// this.modifiedDate = modifiedDate.toString();
-		this.exons = new ArrayList<Exon>();
+		this.exons = new ArrayList<>();
+        this.attributes = new ArrayList<FeatureAttribute>();
+        this.evidence = new ArrayList<Evidence>();
+
 	}
 
 	public Transcript() {
 	}
 
+	/* Connected table attributes is not added here as a class filed, 
+	 * as trqanscript_attrib makes no sense without attrib_type, and this cascade fetch 
+	 * is problematic for auto-fetch and lose performance
+	 */
+	
 	@Id
 	@Column(name = "transcript_id")
 	private Integer transcriptId;
@@ -92,11 +112,8 @@ public class Transcript {
 
 	@Column(name = "is_current")
 	private Boolean isCurrent;
-	
-	@Transient
-	private List<FeatureAttribute> attributes;	
-	
-	@OneToMany(mappedBy = "transcriptId", fetch = FetchType.EAGER)
+
+	@OneToMany(mappedBy = "transcriptId")
 	private List<Evidence> evidence;
 
 	public List<Evidence> getEvidence() {
@@ -105,14 +122,6 @@ public class Transcript {
 
 	public void setEvidence(List<Evidence> evidence) {
 		this.evidence = evidence;
-	}
-
-	public List<FeatureAttribute> getAttributes() {
-		return attributes;
-	}
-
-	public void setAttributes(List<FeatureAttribute> attributes) {
-		this.attributes = attributes;
 	}
 
 	public Integer getSeqRegionStrand() {
@@ -128,6 +137,17 @@ public class Transcript {
 	@Column(name = "created_date", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
+	
+	@Transient
+	private List<FeatureAttribute> attributes;
+
+	public List<FeatureAttribute> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(List<FeatureAttribute> attributes) {
+		this.attributes = attributes;
+	}
 
 	public Integer getGeneId() {
 		return geneId;

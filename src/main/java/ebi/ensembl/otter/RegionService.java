@@ -1,11 +1,13 @@
 package ebi.ensembl.otter;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ebi.ensembl.otter.datasources.model.Evidence;
+import ebi.ensembl.otter.datasources.model.Exon;
 import ebi.ensembl.otter.datasources.model.FeatureAttribute;
 import ebi.ensembl.otter.datasources.model.Gene;
 import ebi.ensembl.otter.datasources.model.Transcript;
@@ -17,7 +19,7 @@ import ebi.ensembl.otter.datasources.repository.TranscriptRepository;
 public class RegionService {
 
 	@Autowired
-	GeneRepository repository;
+	GeneRepository geneRepository;
 
 	@Autowired
 	TranscriptRepository transcriptRepository;
@@ -62,10 +64,13 @@ public class RegionService {
 		 *
 		 */
 		Integer seqRegionId = seqRegionService.getNameAndCoordSystem(regionName, csName, csVerison).getSeqRegionId();
-		List<Gene> rawList = repository.findBySeqRegionIdAndStartAndEnd(seqRegionId, seqRegionStart, seqRegionEnd);
+		List<Gene> rawList = geneRepository.findBySeqRegionIdAndStartAndEnd(seqRegionId, seqRegionStart, seqRegionEnd);
 
-		for (Gene element : rawList) {
-			List<Transcript> transcripts = element.getTranscripts();
+		for (Gene gene : rawList) {
+			List<FeatureAttribute> geneAttributesList = geneRepository
+					.getGeneAttribById(gene.getGeneId());
+			gene.setAttributes(geneAttributesList);
+			List<Transcript> transcripts = gene.getTranscripts();
 			for (Transcript transcript : transcripts) {
 				Integer transcriptId = transcript.getTranscriptId();
 
@@ -74,6 +79,32 @@ public class RegionService {
 				transcript.setAttributes(transcriptAttributesList);
 				List<Evidence> evidenceList = evidenceRepository.findByTranscriptId(transcriptId);
 				transcript.setEvidence(evidenceList);
+				
+				int i = 0;
+				int removedCount = 0;
+				
+				Iterator<Exon> iter = transcript.getExons().iterator();
+				
+				while (iter.hasNext()) {
+					Exon exon = iter.next();
+					if (exon.getSeqRegionStart() < seqRegionStart 
+							|| exon.getSeqRegionEnd() > seqRegionEnd) {
+						iter.remove();
+						removedCount++;
+					}
+					i++;
+				}
+				
+				if (removedCount == 1) {
+					gene.getAttributes().add(new FeatureAttribute("remark",
+							"Transcript " + transcript.getStableId() + " has 1 exon that is not in this slice"));
+				} else if (removedCount > 1 ) {
+					gene.getAttributes().add(new FeatureAttribute("remark",
+							"Transcript " + transcript.getStableId() + " has "
+							+ removedCount +
+							" exons that are not in this slice"));
+
+				}
 			}
 		}
 		return rawList;

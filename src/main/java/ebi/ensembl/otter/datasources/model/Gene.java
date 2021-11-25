@@ -1,5 +1,6 @@
 package ebi.ensembl.otter.datasources.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,18 +14,40 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ebi.ensembl.otter.datasources.repository.GeneRepository;
+
 @Entity
 @Table(schema = "gene")
 public class Gene {
- 
-	
+
+	/*
+	 * Performance optimization for region fetch. Region fetch includes fetch of all
+	 * genes with attribs (including names from attrib type) transcripts with
+	 * attribs and evidences and exons. Fetching genes and then for each gene
+	 * transcripts and for each transcript - exons - is rather slow (commit
+	 * "tem commit"), comparing to join fetch of gens transcripts and exons. The
+	 * region that takes 3 sec for separate fetch, join fetch takes 0.2 sec but then
+	 * we can't fetch transcript attr in the same join fetch, as it involves two
+	 * tables transcripts_attrib and attrib_type. With attrib fetch 0.2 sec
+	 * increases to 1.5 sec, it is still better than no-attrib separate fetch. Fetch
+	 * of attibs in automatic JPQL way (if we fetch from transcript_attrib having
+	 * attrib_type field in it) works much slower than current native query in
+	 * transcript repo (1 sec vs 6 sec)
+	 */
+
+	@Transient
+	@Autowired
+	GeneRepository repository;
+
 	public Gene() {
 	}
 
 	public Gene(Object geneId, List<Transcript> transcripts, Object biotype, Object analysisId, Object seqRegionId,
-			Object seqRegionStart, Object seqRegionEnd, Object seqRegionStrand, Object displayXrefId,
-			Object source, Object description, Object version, Object isCurrent, Object canonicalTranscriptId,
-			Object stable_id, Object createdDate, Object modifiedDate) {
+			Object seqRegionStart, Object seqRegionEnd, Object seqRegionStrand, Object displayXrefId, Object source,
+			Object description, Object version, Object isCurrent, Object canonicalTranscriptId, Object stable_id,
+			Object createdDate, Object modifiedDate) {
 		super();
 		this.geneId = Integer.valueOf((geneId.toString()));
 		this.transcripts = transcripts;
@@ -45,9 +68,10 @@ public class Gene {
 		} else {
 			this.isCurrent = false;
 		}
-	    
+
 		this.canonicalTranscriptId = canonicalTranscriptId.toString();
 		this.stable_id = stable_id.toString();
+        this.attributes = new ArrayList<FeatureAttribute>();
 		this.createdDate = (Date) createdDate; // probably we just need that field as string
 		this.modifiedDate = (Date) modifiedDate; // not sure, as no usage yet
 	}
@@ -55,17 +79,6 @@ public class Gene {
 	@Id
 	@Column(name = "gene_id")
 	private Integer geneId;
-	
-	@Transient
-	private List<FeatureAttribute> attributes;
-
-	public List<FeatureAttribute> getAttributes() {
-		return attributes;
-	}
-
-	public void setAttributes(List<FeatureAttribute> attributes) {
-		this.attributes = attributes;
-	}
 
 	public String getVersion() {
 		return version;
@@ -124,6 +137,17 @@ public class Gene {
 	@Column(name = "created_date", columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
+
+	@Transient
+	private List<FeatureAttribute> attributes;
+
+	public List<FeatureAttribute> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(List<FeatureAttribute> attributes) {
+		this.attributes = attributes;
+	}
 
 	public Integer getGeneId() {
 		return geneId;

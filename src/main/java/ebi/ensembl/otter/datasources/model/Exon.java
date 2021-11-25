@@ -15,7 +15,11 @@ public class Exon {
 
 	public Exon() {
 	}
-
+	
+	/*
+	 * This constructor is used in region fetch, when all exons are
+	 * fetched and filled in gene
+	 */
 	public Exon(Object exontId, Object seqRegionId, Object seqRegionStart, Object seqRegionEnd, Object seqRegionStrand,
 			Object phase, Object end_phase, Object version, Boolean isCurrent, Object isConstitutive,
 			Object stable_id) {
