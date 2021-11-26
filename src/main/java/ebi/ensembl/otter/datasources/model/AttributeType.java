@@ -3,8 +3,10 @@ package ebi.ensembl.otter.datasources.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "attrib_type")
 public class AttributeType {
 	
 	@Id

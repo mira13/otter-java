@@ -27,21 +27,23 @@ public class SeqRegionAttribute implements Serializable {
 	@Column(name = "attrib_type_id")
 	private Integer attribTypeId;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (!(o instanceof SeqRegionAttribute))
-			return false;
-		SeqRegionAttribute attr = (SeqRegionAttribute) o;
-		return Objects.equals(getSeqRegionId(), attr.getSeqRegionId())
-				&& Objects.equals(getAttribTypeId(), attr.getAttribTypeId())
-				&& Objects.equals(getValue(), attr.getValue());
-	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getSeqRegionId() + getAttribTypeId() + getValue());
+		return Objects.hash(attribTypeId, seqRegionId, value);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SeqRegionAttribute other = (SeqRegionAttribute) obj;
+		return Objects.equals(attribTypeId, other.attribTypeId) && Objects.equals(seqRegionId, other.seqRegionId)
+				&& Objects.equals(value, other.value);
 	}
 
 	public Integer getSeqRegionId() {

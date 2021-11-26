@@ -1,4 +1,4 @@
-package ebi.ensembl.otter.datasources.model;
+package ebi.ensembl.otter.webAPIControllers.model;
 
 public class FeatureAttribute {
 	

@@ -1,19 +1,22 @@
 package ebi.ensembl.otter;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ebi.ensembl.otter.datasources.model.Author;
 import ebi.ensembl.otter.datasources.model.Evidence;
 import ebi.ensembl.otter.datasources.model.Exon;
-import ebi.ensembl.otter.datasources.model.FeatureAttribute;
 import ebi.ensembl.otter.datasources.model.Gene;
 import ebi.ensembl.otter.datasources.model.Transcript;
 import ebi.ensembl.otter.datasources.repository.EvidenceRepository;
 import ebi.ensembl.otter.datasources.repository.GeneRepository;
 import ebi.ensembl.otter.datasources.repository.TranscriptRepository;
+import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
+import ebi.ensembl.otter.datasources.repository.AuthorRepository;
 
 @Service
 public class RegionService {
@@ -26,26 +29,18 @@ public class RegionService {
 
 	@Autowired
 	EvidenceRepository evidenceRepository;
+	
+	@Autowired
+	AuthorRepository authorRepository;
 
 	@Autowired
 	SeqRegionService seqRegionService;
+	
+	@Autowired
+	GeneAttributeService geneAttributeService;
 
 	public List<Gene> getByCoordSysAndRegionNameAndStartAndEnd(String csName, String csVerison, String regionName,
 			Integer seqRegionStart, Integer seqRegionEnd) {
-		/*
-		 * Performance optimization for region fetch. Region fetch includes fetch of all
-		 * genes with attribs (including names from attrib type) transcripts with
-		 * attribs and evidences and exons. Fetching genes and then for each gene
-		 * transcripts and for each transcript - exons - is rather slow (commit
-		 * "tem commit"), comparing to join fetch of gens transcripts and exons. The
-		 * region that takes 3 sec for separate fetch, join fetch takes 0.2 sec but then
-		 * we can't fetch transcript attr in the same join fetch, as it involves two
-		 * tables transcripts_attrib and attrib_type. With attrib fetch 0.2 sec
-		 * increases to 1.5 sec, it is still better than no-attrib separate fetch. Fetch
-		 * of attibs in automatic JPQL way (if we fetch from transcript_attrib having
-		 * attrib_type field in it) works much slower than current native query in
-		 * transcript repo (1 sec vs 6 sec)
-		 */
 
 		/*
 		 * Logic level. Filling transcripts with attribs could be done in "region"
@@ -67,8 +62,7 @@ public class RegionService {
 		List<Gene> rawList = geneRepository.findBySeqRegionIdAndStartAndEnd(seqRegionId, seqRegionStart, seqRegionEnd);
 
 		for (Gene gene : rawList) {
-			List<FeatureAttribute> geneAttributesList = geneRepository
-					.getGeneAttribById(gene.getGeneId());
+			List<FeatureAttribute> geneAttributesList = geneAttributeService.getGeneAttribById(gene.getGeneId());
 			gene.setAttributes(geneAttributesList);
 			List<Transcript> transcripts = gene.getTranscripts();
 			for (Transcript transcript : transcripts) {
@@ -76,10 +70,17 @@ public class RegionService {
 
 				List<FeatureAttribute> transcriptAttributesList = transcriptRepository
 						.getTranscriptAttribById(transcriptId);
+				String transcriptName = "";
+						
+				for (FeatureAttribute attribute : transcriptAttributesList) {
+					if(attribute.getName().equals("Name")) {
+						transcriptName = attribute.getValue();
+					}
+				};
 				transcript.setAttributes(transcriptAttributesList);
 				List<Evidence> evidenceList = evidenceRepository.findByTranscriptId(transcriptId);
 				transcript.setEvidence(evidenceList);
-				
+			
 				int i = 0;
 				int removedCount = 0;
 				
@@ -93,14 +94,13 @@ public class RegionService {
 						removedCount++;
 					}
 					i++;
-				}
-				
+				}				
 				if (removedCount == 1) {
 					gene.getAttributes().add(new FeatureAttribute("remark",
-							"Transcript " + transcript.getStableId() + " has 1 exon that is not in this slice"));
+							"Transcript " + transcriptName + " has 1 exon that is not in this slice"));
 				} else if (removedCount > 1 ) {
 					gene.getAttributes().add(new FeatureAttribute("remark",
-							"Transcript " + transcript.getStableId() + " has "
+							"Transcript " + transcriptName + " has "
 							+ removedCount +
 							" exons that are not in this slice"));
 

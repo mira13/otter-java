@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import ebi.ensembl.otter.datasources.model.FeatureAttribute;
 import ebi.ensembl.otter.datasources.model.Transcript;
+import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 
 public interface TranscriptRepository extends JpaRepository<Transcript, Integer> {
 

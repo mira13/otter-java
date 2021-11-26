@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ebi.ensembl.otter.datasources.repository.TranscriptRepository;
+import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 
 @Entity
 @Table(schema = "transcript")

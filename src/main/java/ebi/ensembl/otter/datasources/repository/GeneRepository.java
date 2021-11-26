@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import ebi.ensembl.otter.datasources.model.Exon;
-import ebi.ensembl.otter.datasources.model.FeatureAttribute;
 import ebi.ensembl.otter.datasources.model.Gene;
 import ebi.ensembl.otter.datasources.model.GeneAttribute;
 import ebi.ensembl.otter.datasources.model.Transcript;
 import ebi.ensembl.otter.datasources.model.TranscriptAttribute;
+import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 
 public interface GeneRepository extends JpaRepository<Gene, Integer> {
 
@@ -60,24 +60,6 @@ public interface GeneRepository extends JpaRepository<Gene, Integer> {
 			""", nativeQuery = true)
 	public List<Object[]> findBySeqRegionIdAndStartAndEndUnparsed(@Param("seqRegionId") Integer seqRegionId,
 			@Param("seqRegionStart") Integer seqRegionStart, @Param("seqRegionEnd") Integer seqRegionEnd);
-
-	@Query(value = """
-			SELECT attrib_type.name as name, gene_attrib.value as value from gene_attrib
-			JOIN attrib_type
-			ON attrib_type.attrib_type_id = gene_attrib.attrib_type_id
-			where gene_id = :geneId
-			""", nativeQuery = true)
-	public List<Object[]> getGeneAttribByIdRaw(@Param("geneId") Integer geneId);
-	
-	public default List<FeatureAttribute> getGeneAttribById(Integer geneId) {
-		List <FeatureAttribute> featureList = new ArrayList<FeatureAttribute>();
-		
-		List<Object[]> rawList = this.getGeneAttribByIdRaw(geneId);
-		for (Object[] attribItem : rawList) {
-			featureList.add(new FeatureAttribute(attribItem[0], attribItem[1]));
-		}	
-		return featureList;		
-	}
 	
 	public default List<Gene> findBySeqRegionIdAndStartAndEnd (Integer seqRegionId,
 			Integer seqRegionStart, Integer seqRegionEnd) {

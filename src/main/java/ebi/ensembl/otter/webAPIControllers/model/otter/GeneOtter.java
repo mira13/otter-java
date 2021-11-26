@@ -3,8 +3,8 @@ package ebi.ensembl.otter.webAPIControllers.model.otter;
 import java.util.Date;
 import java.util.List;
 
-import ebi.ensembl.otter.datasources.model.FeatureAttribute;
 import ebi.ensembl.otter.datasources.model.Transcript;
+import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 
 public class GeneOtter {
 	

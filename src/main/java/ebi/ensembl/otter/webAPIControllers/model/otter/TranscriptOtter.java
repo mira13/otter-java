@@ -4,7 +4,7 @@ import java.util.Set;
 
 import ebi.ensembl.otter.datasources.model.Evidence;
 import ebi.ensembl.otter.datasources.model.Exon;
-import ebi.ensembl.otter.datasources.model.FeatureAttribute;
+import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 
 public class TranscriptOtter {
 
