@@ -1,5 +1,7 @@
 package ebi.ensembl.otter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,6 +40,10 @@ public class RegionService {
 
 	@Autowired
 	TranscriptAttributeService transcriptAttributeService;
+	
+	private Integer cacheTranscriptCount = 0;
+	
+	private HashMap<Integer, Gene> geneCache = new HashMap<>();
 
 	public List<Gene> getByCoordSysAndRegionNameAndStartAndEnd(String csName, String csVerison, String regionName,
 			Integer seqRegionStart, Integer seqRegionEnd) {
@@ -60,25 +66,35 @@ public class RegionService {
 		 */
 		Integer seqRegionId = seqRegionService.getNameAndCoordSystem(regionName, csName, csVerison).getSeqRegionId();
 		List<Gene> rawList = geneRepository.findBySeqRegionIdAndStartAndEnd(seqRegionId, seqRegionStart, seqRegionEnd);
-
-		for (Gene gene : rawList) {
-			gene.setAttributes(geneAttributeService.getGeneAttribById(gene.getGeneId()));
-			List<Transcript> transcripts = gene.getTranscripts();
-
-			for (Transcript transcript : transcripts) {
+        List<Gene> resultGeneList = new ArrayList<>();
+		if (cacheTranscriptCount > 1000000) { // reset cache if it is too big
+			// TODO - finish cache clean here
+			geneCache = new HashMap<>();
+		}
+        Iterator<Gene> iterGene = rawList.iterator();
+		
+		while (iterGene.hasNext()) {
+			Gene gene = iterGene.next();
+			if (geneCache.containsKey(gene.getGeneId())) {
+				resultGeneList.add(geneCache.get(gene.getGeneId()));
+				iterGene.remove();
+			}
+		}
+		
+		List<Gene> genes = this.fillGeneAndTranscriptsWithAttribsAndEvidences(rawList);
+		
+		for (Gene gene : genes) {
+			resultGeneList.add(gene);
+			geneCache.put(gene.getGeneId(), gene);
+		}
+		
+		for (Gene gene : resultGeneList) {
+			for (Transcript transcript : gene.getTranscripts()) {
 				Integer transcriptId = transcript.getTranscriptId();
 
 				List<FeatureAttribute> transcriptAttributesList = transcriptAttributeService
 						.getTranscriptAttribById(transcriptId);
 				String transcriptName = "";
-
-				for (FeatureAttribute attribute : transcriptAttributesList) {
-					if (attribute.getName().equals("Name")) {
-						transcriptName = attribute.getValue();
-					}
-				}
-				transcript.setAttributes(transcriptAttributesList);
-				transcript.setEvidence(evidenceRepository.findByTranscriptId(transcriptId));
 
 				int i = 0;
 				int removedCount = 0;
@@ -103,8 +119,33 @@ public class RegionService {
 				}
 			}
 		}
-		return rawList;
+		return resultGeneList;
 
+	}
+
+	private List<Gene> fillGeneAndTranscriptsWithAttribsAndEvidences(List<Gene> rawList) {
+		for (Gene gene : rawList) {
+			gene.setAttributes(geneAttributeService.getGeneAttribById(gene.getGeneId()));
+			List<Transcript> transcripts = gene.getTranscripts();
+
+			for (Transcript transcript : transcripts) {
+				Integer transcriptId = transcript.getTranscriptId();
+
+				List<FeatureAttribute> transcriptAttributesList = transcriptAttributeService
+						.getTranscriptAttribById(transcriptId);
+				String transcriptName = "";
+
+				for (FeatureAttribute attribute : transcriptAttributesList) {
+					if (attribute.getName().equals("Name")) {
+						transcriptName = attribute.getValue();
+					}
+				}
+				transcript.setAttributes(transcriptAttributesList);
+				transcript.setEvidence(evidenceRepository.findByTranscriptId(transcriptId));
+				this.cacheTranscriptCount++;
+			}
+		}
+		return rawList;		
 	}
 
 }
