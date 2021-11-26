@@ -12,59 +12,58 @@ import javax.persistence.Table;
 @Table(schema = "seq_region")
 public class SeqRegion {
 
-	@Id
-	@Column(name = "seq_region_id")
-	private int seqRegionId;
-
-	private String name;
+	@OneToMany(mappedBy = "seqRegionId")
+	private List<SeqRegionAttribute> attributes;
 
 	@Column(name = "coord_system_id")
 	private int coordSystemId;
 
 	private int length;
 
-	@OneToMany(mappedBy = "seqRegionId")
-	private List<SeqRegionAttribute> attributes;
-	
-	public int getSeqRegionId() {
-		return seqRegionId;
-	}
+	private String name;
 
-	public void setSeq_region_id(int seqRegionId) {
-		this.seqRegionId = seqRegionId;
-	}
+	@Id
+	@Column(name = "seq_region_id")
+	private int seqRegionId;
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public List<SeqRegionAttribute> getAttributes() {
+		return attributes;
 	}
 
 	public int getCoordSystemId() {
 		return coordSystemId;
 	}
 
-	public void setCoordSystemId(int coordSystemId) {
-		this.coordSystemId = coordSystemId;
-	}
-
 	public int getLength() {
 		return length;
 	}
 
-	public void setLength(int length) {
-		this.length = length;
+	public String getName() {
+		return name;
 	}
 
-	public List<SeqRegionAttribute> getAttributes() {
-		return attributes;
+	public int getSeqRegionId() {
+		return seqRegionId;
 	}
 
 	public void setAttributes(List<SeqRegionAttribute> attributes) {
 		this.attributes = attributes;
 	}
 
+	public void setCoordSystemId(int coordSystemId) {
+		this.coordSystemId = coordSystemId;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setSeq_region_id(int seqRegionId) {
+		this.seqRegionId = seqRegionId;
+	}
 
 }

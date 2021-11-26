@@ -9,67 +9,67 @@ import javax.persistence.Table;
 @Table(schema = "coord_system")
 public class CoordSystem {
 
+	private String attrib;
+
 	@Id
 	@Column(name = "coord_system_id")
 	private Integer coordSystemId;
 
-	@Column(name = "species_id")
-	private int speciesId;
-
 	private String name;
-
-	private String version;
 
 	private int rank;
 
-	private String attrib;
+	@Column(name = "species_id")
+	private int speciesId;
+
+	private String version;
+
+	public String getAttrib() {
+		return attrib;
+	}
 
 	public Integer getCoordSystemId() {
 		return coordSystemId;
-	}
-
-	public void setCoordSystemId(Integer coordSystemId) {
-		this.coordSystemId = coordSystemId;
-	}
-
-	public int getSpeciesId() {
-		return speciesId;
-	}
-
-	public void setSpeciesId(int speciesId) {
-		this.speciesId = speciesId;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public int getRank() {
+		return rank;
+	}
+
+	public int getSpeciesId() {
+		return speciesId;
 	}
 
 	public String getVersion() {
 		return version;
 	}
 
-	public void setVersion(String version) {
-		this.version = version;
+	public void setAttrib(String attrib) {
+		this.attrib = attrib;
 	}
 
-	public int getRank() {
-		return rank;
+	public void setCoordSystemId(Integer coordSystemId) {
+		this.coordSystemId = coordSystemId;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public void setRank(int rank) {
 		this.rank = rank;
 	}
 
-	public String getAttrib() {
-		return attrib;
+	public void setSpeciesId(int speciesId) {
+		this.speciesId = speciesId;
 	}
 
-	public void setAttrib(String attrib) {
-		this.attrib = attrib;
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 }

@@ -10,6 +10,7 @@ import ebi.ensembl.otter.datasources.model.SliceLock;
 
 public interface SliceLockRepository extends JpaRepository<SliceLock, Integer> {
 
+	@Override
 	public List<SliceLock> findAll();
 
 	public List<SliceLock> findBySeqRegionIdAndActiveNot(int seqRegionId, String active);

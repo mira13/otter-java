@@ -6,23 +6,23 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ebi.ensembl.otter.datasources.model.GeneAttribute;
-import ebi.ensembl.otter.datasources.repository.GeneAttributeRepository;
+import ebi.ensembl.otter.datasources.model.TranscriptAttribute;
+import ebi.ensembl.otter.datasources.repository.TranscriptAttributeRepository;
 import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 
 @Service
-public class GeneAttributeService {
+public class TranscriptAttributeService {
 
 	@Autowired
-	private GeneAttributeRepository repository;
+	private TranscriptAttributeRepository repository;
 
 	@Autowired
 	private AttributeTypeService attributeTypeService;
 
-	public List<FeatureAttribute> getGeneAttribById(Integer geneId) {
+	public List<FeatureAttribute> getTranscriptAttribById(Integer transcriptId) {
 		List<FeatureAttribute> featureList = new ArrayList<>();
-		List<GeneAttribute> rawList = repository.findByGeneId(geneId);
-		for (GeneAttribute attribItem : rawList) {
+		List<TranscriptAttribute> rawList = repository.findByTranscriptId(transcriptId);
+		for (TranscriptAttribute attribItem : rawList) {
 			featureList.add(new FeatureAttribute(
 					attributeTypeService.getAttributeNameById(attribItem.getAttributeTypeId()), attribItem.getValue()));
 		}

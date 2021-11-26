@@ -7,45 +7,44 @@ import ebi.ensembl.otter.datasources.model.Transcript;
 import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 
 public class GeneOtter {
-	
-	public GeneOtter() {
-	}
 
-	private Integer geneId;
+	private Integer analysisId;
 
 	private List<FeatureAttribute> attributes;
 
-	private List<Transcript> transcripts;
-
 	private String biotype;
 
-	private Integer analysisId;
+	private String canonicalTranscriptId;
+
+	private Date createdDate;
+
+	private String description;
+
+	private Integer displayXrefId;
+
+	private Integer geneId;
+
+	private Boolean isCurrent;
+
+	private Date modifiedDate;
+
+	private Integer seqRegionEnd;
 
 	private Integer seqRegionId;
 
 	private Integer seqRegionStart;
 
-	private Integer seqRegionEnd;
-
 	private Integer seqRegionStrand;
-
-	private Integer displayXrefId;
 
 	private String source;
 
-	private String description;
+	private String stable_id;
+
+	private List<Transcript> transcripts;
 
 	private String version;
 
-	private Boolean isCurrent;
-
-	private String canonicalTranscriptId;
-
-	private String stable_id;
-
-	private Date createdDate;
-
-	private Date modifiedDate;
+	public GeneOtter() {
+	}
 
 }
-

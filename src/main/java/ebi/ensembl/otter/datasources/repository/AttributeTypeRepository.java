@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ebi.ensembl.otter.datasources.model.AttributeType;
 
 public interface AttributeTypeRepository extends JpaRepository<AttributeType, Integer> {
-	
+
+	@Override
 	public List<AttributeType> findAll();
 
 }

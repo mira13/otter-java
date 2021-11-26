@@ -8,6 +8,7 @@ import ebi.ensembl.otter.datasources.model.CoordSystem;
 
 public interface CoordSystemRepository extends JpaRepository<CoordSystem, Integer> {
 
+	@Override
 	public List<CoordSystem> findAll();
 
 	public List<CoordSystem> findByNameAndVersion(String name, String version);

@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import ebi.ensembl.otter.datasources.model.SeqRegion;
-import ebi.ensembl.otter.datasources.model.SliceLock;
 
 public interface SeqRegionRepository extends JpaRepository<SeqRegion, Integer> {
 
+	@Override
 	public List<SeqRegion> findAll();
 
 	public List<SeqRegion> findByNameAndCoordSystemId(String name, int coordSystemId);
@@ -18,7 +18,7 @@ public interface SeqRegionRepository extends JpaRepository<SeqRegion, Integer> {
 	/**
 	 * Selects all seq_regions with exact coord_system_id, that has attribute
 	 * "hidden" (id 129) set to 0
-	 * 
+	 *
 	 * @param cs - coordinate system id
 	 * @return native query result
 	 */

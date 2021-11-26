@@ -19,14 +19,6 @@ public interface TranscriptRepository extends JpaRepository<Transcript, Integer>
 			""")
 	public List<Transcript> fetchByGeneId(@Param("geneId") Integer geneId);
 
-	@Query(value = """
-			SELECT attrib_type.name as name, transcript_attrib.value as value from transcript_attrib
-			JOIN attrib_type
-			ON attrib_type.attrib_type_id = transcript_attrib.attrib_type_id
-			WHERE transcript_id = :transcriptId
-			""", nativeQuery = true)
-	public List<Object[]> getTranscriptAttribByIdRaw(@Param("transcriptId") Integer geneId);
-
 	public default List<FeatureAttribute> getTranscriptAttribById(Integer transcriptId) {
 		List<FeatureAttribute> featureList = new ArrayList<>();
 
@@ -36,5 +28,13 @@ public interface TranscriptRepository extends JpaRepository<Transcript, Integer>
 		}
 		return featureList;
 	}
+
+	@Query(value = """
+			SELECT attrib_type.name as name, transcript_attrib.value as value from transcript_attrib
+			JOIN attrib_type
+			ON attrib_type.attrib_type_id = transcript_attrib.attrib_type_id
+			WHERE transcript_id = :transcriptId
+			""", nativeQuery = true)
+	public List<Object[]> getTranscriptAttribByIdRaw(@Param("transcriptId") Integer geneId);
 
 }

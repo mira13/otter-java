@@ -8,36 +8,36 @@ import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 
 public class TranscriptOtter {
 
-	private Integer transcriptId;
+	private Integer analysisId;
+
+	private Set<FeatureAttribute> attributes;
 
 	private String biotype;
 
-	private Integer analysisId;
+	private String description;
+
+	private Integer displayXrefId;
+
+	private Set<Evidence> evidence;
+
+	private Set<Exon> exons;
 
 	private Integer geneId;
+
+	private Boolean isCurrent;
+
+	private Integer seqRegionEnd;
 
 	private Integer seqRegionId;
 
 	private Integer seqRegionStart;
 
-	private Integer seqRegionEnd;
-
 	private Integer seqRegionStrand;
-
-	private Integer displayXrefId;
 
 	private String source;
 
-	private String description;
+	private Integer transcriptId;
 
 	private String version;
-
-	private Boolean isCurrent;
-
-	private Set<Evidence> evidence;
-    
-	private Set<Exon> exons;
-	
-	private Set<FeatureAttribute> attributes;
 
 }

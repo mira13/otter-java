@@ -14,26 +14,24 @@ import ebi.ensembl.otter.datasources.repository.AuthorRepository;
  */
 @Service
 public class AuthorService {
-	
+
 	@Autowired
 	private AuthorRepository repository;
-	private HashMap<Integer, String> authorList = new HashMap<Integer, String>();
+	private HashMap<Integer, String> authorList = new HashMap<>();
 
-	
 	private void updateAuthorList() {
-		List<Author> authorRawList= repository.findAll();
+		List<Author> authorRawList = repository.findAll();
 		for (Author author : authorRawList) {
 			authorList.put(author.getAuthorId(), author.getAuthorName());
 		}
 	}
-	
+
 	public String getAuthorNameById(Integer id) {
 		if (!authorList.containsKey(id)) {
-			this.updateAuthorList();		
+			this.updateAuthorList();
 		}
-		
-		return authorList.containsKey(id) ? authorList.get(id) 
-				: "Warning: no author found";
+
+		return authorList.containsKey(id) ? authorList.get(id) : "Warning: no author found";
 	}
 
 }

@@ -13,12 +13,53 @@ import javax.persistence.TemporalType;
 @Table(schema = "exon")
 public class Exon {
 
+	@Column(name = "created_date", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdDate;
+
+	@Column(name = "end_phase")
+	private Integer end_phase;
+
+	@Id
+	@Column(name = "exon_id")
+	private Integer exontId;
+
+	@Column(name = "is_constitutive")
+	private Boolean isConstitutive;
+
+	@Column(name = "is_current")
+	private Boolean isCurrent;
+
+	@Column(name = "modified_date", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date modifiedDate;
+
+	@Column(name = "phase")
+	private Integer phase;
+
+	@Column(name = "seq_region_end")
+	private Integer seqRegionEnd;
+
+	@Column(name = "seq_region_id")
+	private Integer seqRegionId;
+
+	@Column(name = "seq_region_start")
+	private Integer seqRegionStart;
+
+	@Column(name = "seq_region_strand")
+	private Integer seqRegionStrand;
+
+	@Column(name = "stable_id")
+	private String stable_id;
+
+	private String version;
+
 	public Exon() {
 	}
-	
+
 	/*
-	 * This constructor is used in region fetch, when all exons are
-	 * fetched and filled in gene
+	 * This constructor is used in region fetch, when all exons are fetched and
+	 * filled in gene
 	 */
 	public Exon(Object exontId, Object seqRegionId, Object seqRegionStart, Object seqRegionEnd, Object seqRegionStrand,
 			Object phase, Object end_phase, Object version, Boolean isCurrent, Object isConstitutive,
@@ -38,155 +79,114 @@ public class Exon {
 		} else {
 			this.isConstitutive = false;
 		}
-			
+
 		this.stable_id = stable_id.toString();
 		// this.createdDate = createdDate.toString();
 		// this.modifiedDate = modifiedDate.toString();
-	}
-
-	@Id
-	@Column(name = "exon_id")
-	private Integer exontId;
-
-	@Column(name = "seq_region_id")
-	private Integer seqRegionId;
-
-	@Column(name = "seq_region_start")
-	private Integer seqRegionStart;
-
-	@Column(name = "seq_region_end")
-	private Integer seqRegionEnd;
-
-	@Column(name = "seq_region_strand")
-	private Integer seqRegionStrand;
-
-	@Column(name = "phase")
-	private Integer phase;
-
-	@Column(name = "end_phase")
-	private Integer end_phase;
-
-	private String version;
-
-	@Column(name = "is_current")
-	private Boolean isCurrent;
-
-	@Column(name = "is_constitutive")
-	private Boolean isConstitutive;
-
-	@Column(name = "stable_id")
-	private String stable_id;
-
-	@Column(name = "created_date", columnDefinition = "DATETIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdDate;
-
-	@Column(name = "modified_date", columnDefinition = "DATETIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date modifiedDate;
-
-	public Integer getSeqRegionId() {
-		return seqRegionId;
-	}
-
-	public void setSeqRegionId(Integer seqRegionId) {
-		this.seqRegionId = seqRegionId;
-	}
-
-	public Integer getSeqRegionStart() {
-		return seqRegionStart;
-	}
-
-	public void setSeqRegionStart(Integer seqRegionStart) {
-		this.seqRegionStart = seqRegionStart;
-	}
-
-	public Integer getSeqRegionEnd() {
-		return seqRegionEnd;
-	}
-
-	public void setSeqRegionEnd(Integer seqRegionEnd) {
-		this.seqRegionEnd = seqRegionEnd;
-	}
-
-	public Integer getSeqRegionStrand() {
-		return seqRegionStrand;
-	}
-
-	public void setSeqRegionStrand(Integer seqRegionStrand) {
-		this.seqRegionStrand = seqRegionStrand;
-	}
-
-	public Boolean getIsCurrent() {
-		return isCurrent;
-	}
-
-	public void setIsCurrent(Boolean isCurrent) {
-		this.isCurrent = isCurrent;
-	}
-
-	public String getStable_id() {
-		return stable_id;
-	}
-
-	public void setStable_id(String stable_id) {
-		this.stable_id = stable_id;
 	}
 
 	public Date getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-
-	public Date getModifiedDate() {
-		return modifiedDate;
-	}
-
-	public void setModifiedDate(Date modifiedDate) {
-		this.modifiedDate = modifiedDate;
+	public Integer getEnd_phase() {
+		return end_phase;
 	}
 
 	public Integer getExontId() {
 		return exontId;
 	}
 
-	public void setExontId(Integer exontId) {
-		this.exontId = exontId;
+	public Boolean getIsConstitutive() {
+		return isConstitutive;
+	}
+
+	public Boolean getIsCurrent() {
+		return isCurrent;
+	}
+
+	public Date getModifiedDate() {
+		return modifiedDate;
 	}
 
 	public Integer getPhase() {
 		return phase;
 	}
 
-	public void setPhase(Integer phase) {
-		this.phase = phase;
+	public Integer getSeqRegionEnd() {
+		return seqRegionEnd;
 	}
 
-	public Integer getEnd_phase() {
-		return end_phase;
+	public Integer getSeqRegionId() {
+		return seqRegionId;
 	}
 
-	public void setEnd_phase(Integer end_phase) {
-		this.end_phase = end_phase;
+	public Integer getSeqRegionStart() {
+		return seqRegionStart;
+	}
+
+	public Integer getSeqRegionStrand() {
+		return seqRegionStrand;
+	}
+
+	public String getStable_id() {
+		return stable_id;
 	}
 
 	public String getVersion() {
 		return version;
 	}
 
-	public void setVersion(String version) {
-		this.version = version;
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 
-	public Boolean getIsConstitutive() {
-		return isConstitutive;
+	public void setEnd_phase(Integer end_phase) {
+		this.end_phase = end_phase;
+	}
+
+	public void setExontId(Integer exontId) {
+		this.exontId = exontId;
 	}
 
 	public void setIsConstitutive(Boolean isConstitutive) {
 		this.isConstitutive = isConstitutive;
+	}
+
+	public void setIsCurrent(Boolean isCurrent) {
+		this.isCurrent = isCurrent;
+	}
+
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+
+	public void setPhase(Integer phase) {
+		this.phase = phase;
+	}
+
+	public void setSeqRegionEnd(Integer seqRegionEnd) {
+		this.seqRegionEnd = seqRegionEnd;
+	}
+
+	public void setSeqRegionId(Integer seqRegionId) {
+		this.seqRegionId = seqRegionId;
+	}
+
+	public void setSeqRegionStart(Integer seqRegionStart) {
+		this.seqRegionStart = seqRegionStart;
+	}
+
+	public void setSeqRegionStrand(Integer seqRegionStrand) {
+		this.seqRegionStrand = seqRegionStrand;
+	}
+
+	public void setStable_id(String stable_id) {
+		this.stable_id = stable_id;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 }

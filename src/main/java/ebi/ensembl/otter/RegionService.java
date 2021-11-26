@@ -1,22 +1,19 @@
 package ebi.ensembl.otter;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ebi.ensembl.otter.datasources.model.Author;
-import ebi.ensembl.otter.datasources.model.Evidence;
 import ebi.ensembl.otter.datasources.model.Exon;
 import ebi.ensembl.otter.datasources.model.Gene;
 import ebi.ensembl.otter.datasources.model.Transcript;
+import ebi.ensembl.otter.datasources.repository.AuthorRepository;
 import ebi.ensembl.otter.datasources.repository.EvidenceRepository;
 import ebi.ensembl.otter.datasources.repository.GeneRepository;
 import ebi.ensembl.otter.datasources.repository.TranscriptRepository;
 import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
-import ebi.ensembl.otter.datasources.repository.AuthorRepository;
 
 @Service
 public class RegionService {
@@ -29,15 +26,18 @@ public class RegionService {
 
 	@Autowired
 	EvidenceRepository evidenceRepository;
-	
+
 	@Autowired
 	AuthorRepository authorRepository;
 
 	@Autowired
 	SeqRegionService seqRegionService;
-	
+
 	@Autowired
 	GeneAttributeService geneAttributeService;
+
+	@Autowired
+	TranscriptAttributeService transcriptAttributeService;
 
 	public List<Gene> getByCoordSysAndRegionNameAndStartAndEnd(String csName, String csVerison, String regionName,
 			Integer seqRegionStart, Integer seqRegionEnd) {
@@ -62,47 +62,43 @@ public class RegionService {
 		List<Gene> rawList = geneRepository.findBySeqRegionIdAndStartAndEnd(seqRegionId, seqRegionStart, seqRegionEnd);
 
 		for (Gene gene : rawList) {
-			List<FeatureAttribute> geneAttributesList = geneAttributeService.getGeneAttribById(gene.getGeneId());
-			gene.setAttributes(geneAttributesList);
+			gene.setAttributes(geneAttributeService.getGeneAttribById(gene.getGeneId()));
 			List<Transcript> transcripts = gene.getTranscripts();
+
 			for (Transcript transcript : transcripts) {
 				Integer transcriptId = transcript.getTranscriptId();
 
-				List<FeatureAttribute> transcriptAttributesList = transcriptRepository
+				List<FeatureAttribute> transcriptAttributesList = transcriptAttributeService
 						.getTranscriptAttribById(transcriptId);
 				String transcriptName = "";
-						
+
 				for (FeatureAttribute attribute : transcriptAttributesList) {
-					if(attribute.getName().equals("Name")) {
+					if (attribute.getName().equals("Name")) {
 						transcriptName = attribute.getValue();
 					}
-				};
+				}
 				transcript.setAttributes(transcriptAttributesList);
-				List<Evidence> evidenceList = evidenceRepository.findByTranscriptId(transcriptId);
-				transcript.setEvidence(evidenceList);
-			
+				transcript.setEvidence(evidenceRepository.findByTranscriptId(transcriptId));
+
 				int i = 0;
 				int removedCount = 0;
-				
+
 				Iterator<Exon> iter = transcript.getExons().iterator();
-				
+
 				while (iter.hasNext()) {
 					Exon exon = iter.next();
-					if (exon.getSeqRegionStart() < seqRegionStart 
-							|| exon.getSeqRegionEnd() > seqRegionEnd) {
+					if (exon.getSeqRegionStart() < seqRegionStart || exon.getSeqRegionEnd() > seqRegionEnd) {
 						iter.remove();
 						removedCount++;
 					}
 					i++;
-				}				
+				}
 				if (removedCount == 1) {
 					gene.getAttributes().add(new FeatureAttribute("remark",
 							"Transcript " + transcriptName + " has 1 exon that is not in this slice"));
-				} else if (removedCount > 1 ) {
-					gene.getAttributes().add(new FeatureAttribute("remark",
-							"Transcript " + transcriptName + " has "
-							+ removedCount +
-							" exons that are not in this slice"));
+				} else if (removedCount > 1) {
+					gene.getAttributes().add(new FeatureAttribute("remark", "Transcript " + transcriptName + " has "
+							+ removedCount + " exons that are not in this slice"));
 
 				}
 			}

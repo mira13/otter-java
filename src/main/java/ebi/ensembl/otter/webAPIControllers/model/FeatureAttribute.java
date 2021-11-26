@@ -1,9 +1,9 @@
 package ebi.ensembl.otter.webAPIControllers.model;
 
 public class FeatureAttribute {
-	
+
 	private String name;
-	
+
 	private String value;
 
 	public FeatureAttribute(Object attribItem, Object attribItem2) {
@@ -16,12 +16,12 @@ public class FeatureAttribute {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getValue() {
 		return value;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public void setValue(String value) {

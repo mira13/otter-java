@@ -26,13 +26,82 @@ import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 @Table(schema = "transcript")
 public class Transcript {
 
+	@Column(name = "analysis_id")
+	private Integer analysisId;
+
+	@Transient
+	private List<FeatureAttribute> attributes;
+
+	private String biotype;
+
+	/*
+	 * Connected table attributes is not added here as a class filed, as
+	 * trqanscript_attrib makes no sense without attrib_type, and this cascade fetch
+	 * is problematic for auto-fetch and lose performance
+	 */
+
+	@Column(name = "canonical_translation_id")
+	private String canonicalTranslationId;
+
+	@Column(name = "created_date", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdDate;
+
+	private String description;
+
+	@Column(name = "display_xref_id")
+	private Integer displayXrefId;
+
+	@OneToMany(mappedBy = "transcriptId")
+	private List<Evidence> evidence;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "exon_transcript", joinColumns = @JoinColumn(name = "transcript_id"), inverseJoinColumns = @JoinColumn(name = "exon_id"))
+	private List<Exon> exons;
+
+	@Column(name = "gene_id")
+	private Integer geneId;
+
+	@Column(name = "is_current")
+	private Boolean isCurrent;
+
+	@Column(name = "modified_date", columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date modifiedDate;
+
+	@Column(name = "seq_region_end")
+	private Integer seqRegionEnd;
+
+	@Column(name = "seq_region_id")
+	private Integer seqRegionId;
+
+	@Column(name = "seq_region_start")
+	private Integer seqRegionStart;
+
+	@Column(name = "seq_region_strand")
+	private Integer seqRegionStrand;
+
+	private String source;
+
+	@Column(name = "stable_id")
+	private String stableId;
+
+	@Id
+	@Column(name = "transcript_id")
+	private Integer transcriptId;
+
 	@Transient
 	@Autowired
 	TranscriptRepository transcriptRepository;
 
+	private String version;
+
+	public Transcript() {
+	}
+
 	/*
-	 * This constructor is used in region fetch, when all transcripts are
-	 * fetched and filled in gene
+	 * This constructor is used in region fetch, when all transcripts are fetched
+	 * and filled in gene
 	 */
 	public Transcript(Object transcriptId, Object biotype, Object analysisId, Object geneId, Object seqRegionId,
 			Object seqRegionStart, Object seqRegionEnd, Object seqRegionStrand, Object displayXrefId, Object source,
@@ -59,247 +128,177 @@ public class Transcript {
 			this.canonicalTranslationId = canonicalTranslationId.toString();
 		}
 		this.stableId = stableId.toString();
-		// I am not sure if the date is used anywhere, so this is commented for
-		// now.
-		//  Full constructor will be created later;
-		// this.createdDate = createdDate.toString();
-		// this.modifiedDate = modifiedDate.toString();
+		this.createdDate = createdDate;
+		this.modifiedDate = modifiedDate;
+
 		this.exons = new ArrayList<>();
-        this.attributes = new ArrayList<FeatureAttribute>();
-        this.evidence = new ArrayList<Evidence>();
+		this.attributes = new ArrayList<>();
+		this.evidence = new ArrayList<>();
 
-	}
-
-	public Transcript() {
-	}
-
-	/* Connected table attributes is not added here as a class filed, 
-	 * as trqanscript_attrib makes no sense without attrib_type, and this cascade fetch 
-	 * is problematic for auto-fetch and lose performance
-	 */
-	
-	@Id
-	@Column(name = "transcript_id")
-	private Integer transcriptId;
-
-	private String biotype;
-
-	@Column(name = "analysis_id")
-	private Integer analysisId;
-
-	@Column(name = "gene_id")
-	private Integer geneId;
-
-	@Column(name = "seq_region_id")
-	private Integer seqRegionId;
-
-	@Column(name = "seq_region_start")
-	private Integer seqRegionStart;
-
-	@Column(name = "seq_region_end")
-	private Integer seqRegionEnd;
-
-	@Column(name = "seq_region_strand")
-	private Integer seqRegionStrand;
-
-	@Column(name = "display_xref_id")
-	private Integer displayXrefId;
-
-	private String source;
-
-	private String description;
-
-	private String version;
-
-	@Column(name = "is_current")
-	private Boolean isCurrent;
-
-	@OneToMany(mappedBy = "transcriptId")
-	private List<Evidence> evidence;
-
-	public List<Evidence> getEvidence() {
-		return evidence;
-	}
-
-	public void setEvidence(List<Evidence> evidence) {
-		this.evidence = evidence;
-	}
-
-	public Integer getSeqRegionStrand() {
-		return seqRegionStrand;
-	}
-
-	@Column(name = "canonical_translation_id")
-	private String canonicalTranslationId;
-
-	@Column(name = "stable_id")
-	private String stableId;
-
-	@Column(name = "created_date", columnDefinition = "DATETIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdDate;
-	
-	@Transient
-	private List<FeatureAttribute> attributes;
-
-	public List<FeatureAttribute> getAttributes() {
-		return attributes;
-	}
-
-	public void setAttributes(List<FeatureAttribute> attributes) {
-		this.attributes = attributes;
-	}
-
-	public Integer getGeneId() {
-		return geneId;
-	}
-
-	public void setGeneId(Integer geneId) {
-		this.geneId = geneId;
-	}
-
-	public String getBiotype() {
-		return biotype;
-	}
-
-	public void setBiotype(String biotype) {
-		this.biotype = biotype;
 	}
 
 	public Integer getAnalysisId() {
 		return analysisId;
 	}
 
-	public void setAnalysisId(Integer analysisId) {
-		this.analysisId = analysisId;
+	public List<FeatureAttribute> getAttributes() {
+		return attributes;
 	}
 
-	public Integer getSeqRegionId() {
-		return seqRegionId;
-	}
-
-	public void setSeqRegionId(Integer seqRegionId) {
-		this.seqRegionId = seqRegionId;
-	}
-
-	public Integer getSeqRegionStart() {
-		return seqRegionStart;
-	}
-
-	public void setSeqRegionStart(Integer seqRegionStart) {
-		this.seqRegionStart = seqRegionStart;
-	}
-
-	public Integer getSeqRegionEnd() {
-		return seqRegionEnd;
-	}
-
-	public void setSeqRegionEnd(Integer seqRegionEnd) {
-		this.seqRegionEnd = seqRegionEnd;
-	}
-
-	public Integer getSeqRegionStrandt() {
-		return seqRegionStrand;
-	}
-
-	public void setSeqRegionStrand(Integer seqRegionStrand) {
-		this.seqRegionStrand = seqRegionStrand;
-	}
-
-	public Integer getDisplayXrefId() {
-		return displayXrefId;
-	}
-
-	public void setDisplayXrefId(Integer displayXrefId) {
-		this.displayXrefId = displayXrefId;
-	}
-
-	public String getSource() {
-		return source;
-	}
-
-	public void setSource(String source) {
-		this.source = source;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Boolean getIsCurrent() {
-		return isCurrent;
-	}
-
-	public void setIsCurrent(Boolean isCurrent) {
-		this.isCurrent = isCurrent;
+	public String getBiotype() {
+		return biotype;
 	}
 
 	public String getCanonicalTranslationId() {
 		return canonicalTranslationId;
 	}
 
-	public Integer getTranscriptId() {
-		return transcriptId;
-	}
-
-	public void setTranscriptId(Integer transcriptId) {
-		this.transcriptId = transcriptId;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	public void setCanonicalTranslationId(String canonicalTranslationId) {
-		this.canonicalTranslationId = canonicalTranslationId;
-	}
-
-	public String getStableId() {
-		return stableId;
-	}
-
-	public void setStableId(String stable_id) {
-		this.stableId = stable_id;
-	}
-
 	public Date getCreatedDate() {
 		return createdDate;
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "exon_transcript", joinColumns = @JoinColumn(name = "transcript_id"), inverseJoinColumns = @JoinColumn(name = "exon_id"))
-	private List<Exon> exons;
+	public String getDescription() {
+		return description;
+	}
+
+	public Integer getDisplayXrefId() {
+		return displayXrefId;
+	}
+
+	public List<Evidence> getEvidence() {
+		return evidence;
+	}
 
 	public List<Exon> getExons() {
 		return exons;
 	}
 
-	public void setExons(List<Exon> exons) {
-		this.exons = exons;
+	public Integer getGeneId() {
+		return geneId;
 	}
 
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
+	public Boolean getIsCurrent() {
+		return isCurrent;
 	}
 
 	public Date getModifiedDate() {
 		return modifiedDate;
 	}
 
+	public Integer getSeqRegionEnd() {
+		return seqRegionEnd;
+	}
+
+	public Integer getSeqRegionId() {
+		return seqRegionId;
+	}
+
+	public Integer getSeqRegionStart() {
+		return seqRegionStart;
+	}
+
+	public Integer getSeqRegionStrand() {
+		return seqRegionStrand;
+	}
+
+	public Integer getSeqRegionStrandt() {
+		return seqRegionStrand;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public String getStableId() {
+		return stableId;
+	}
+
+	public Integer getTranscriptId() {
+		return transcriptId;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setAnalysisId(Integer analysisId) {
+		this.analysisId = analysisId;
+	}
+
+	public void setAttributes(List<FeatureAttribute> attributes) {
+		this.attributes = attributes;
+	}
+
+	public void setBiotype(String biotype) {
+		this.biotype = biotype;
+	}
+
+	public void setCanonicalTranslationId(String canonicalTranslationId) {
+		this.canonicalTranslationId = canonicalTranslationId;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setDisplayXrefId(Integer displayXrefId) {
+		this.displayXrefId = displayXrefId;
+	}
+
+	public void setEvidence(List<Evidence> evidence) {
+		this.evidence = evidence;
+	}
+
+	public void setExons(List<Exon> exons) {
+		this.exons = exons;
+	}
+
+	public void setGeneId(Integer geneId) {
+		this.geneId = geneId;
+	}
+
+	public void setIsCurrent(Boolean isCurrent) {
+		this.isCurrent = isCurrent;
+	}
+
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
 	}
 
-	@Column(name = "modified_date", columnDefinition = "DATETIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date modifiedDate;
+	public void setSeqRegionEnd(Integer seqRegionEnd) {
+		this.seqRegionEnd = seqRegionEnd;
+	}
+
+	public void setSeqRegionId(Integer seqRegionId) {
+		this.seqRegionId = seqRegionId;
+	}
+
+	public void setSeqRegionStart(Integer seqRegionStart) {
+		this.seqRegionStart = seqRegionStart;
+	}
+
+	public void setSeqRegionStrand(Integer seqRegionStrand) {
+		this.seqRegionStrand = seqRegionStrand;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public void setStableId(String stable_id) {
+		this.stableId = stable_id;
+	}
+
+	public void setTranscriptId(Integer transcriptId) {
+		this.transcriptId = transcriptId;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
 }

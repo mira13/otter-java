@@ -21,11 +21,11 @@ public class ExonTranscript implements Serializable {
 	private Integer exonId;
 
 	@Id
-	@Column(name = "transcript_id")
-	private Integer transcriptId;
+	private Integer rank;
 
 	@Id
-	private Integer rank;
+	@Column(name = "transcript_id")
+	private Integer transcriptId;
 
 	@Override
 	public boolean equals(Object o) {
@@ -39,33 +39,33 @@ public class ExonTranscript implements Serializable {
 				&& Objects.equals(getRank(), exonTranscript.getRank());
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getExonId() + getTranscriptId() + getRank());
-	}
-
 	public Integer getExonId() {
 		return exonId;
-	}
-
-	public void setExonId(Integer exonId) {
-		this.exonId = exonId;
-	}
-
-	public Integer getTranscriptId() {
-		return transcriptId;
-	}
-
-	public void setTranscriptId(Integer transcriptId) {
-		this.transcriptId = transcriptId;
 	}
 
 	public Integer getRank() {
 		return rank;
 	}
 
+	public Integer getTranscriptId() {
+		return transcriptId;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getExonId() + getTranscriptId() + getRank());
+	}
+
+	public void setExonId(Integer exonId) {
+		this.exonId = exonId;
+	}
+
 	public void setRank(Integer rank) {
 		this.rank = rank;
+	}
+
+	public void setTranscriptId(Integer transcriptId) {
+		this.transcriptId = transcriptId;
 	}
 
 }
