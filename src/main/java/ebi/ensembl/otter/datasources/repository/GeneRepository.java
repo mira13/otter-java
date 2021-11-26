@@ -42,13 +42,13 @@ public interface GeneRepository extends JpaRepository<Gene, Integer> {
 
 			if (genes.get(geneIndex).getTranscripts().isEmpty() || !item[16].toString()
 					.equals(genes.get(geneIndex).getTranscripts().get(transcriptIndex).getTranscriptId().toString())) {
-				transcript = new Transcript(item[16], item[22], item[17], item[0], item[3], item[18], item[19], item[6],
-						item[20], item[21], item[23], item[26], true, item[24], item[25]);
+				transcript = new Transcript(item[16], item[22], item[17], item[0], item[3], item[18], item[19],
+						item[35], item[20], item[21], item[23], item[26], true, item[24], item[25]);
 				genes.get(geneIndex).getTranscripts().add(transcript);
 			}
 
 			transcriptIndex = genes.get(geneIndex).getTranscripts().size() - 1;
-			exon = new Exon(item[29], item[3], item[35], item[36], item[6], item[31], item[32], item[30], true,
+			exon = new Exon(item[29], item[3], item[35], item[36], item[36], item[31], item[32], item[30], true,
 					item[33], item[34]);
 			genes.get(geneIndex).getTranscripts().get(transcriptIndex).getExons().add(exon);
 		}
@@ -74,7 +74,8 @@ public interface GeneRepository extends JpaRepository<Gene, Integer> {
 			e.exon_id, e.version as exonVersion,
 			e.phase, e.end_phase,
 			e.is_constitutive, e.stable_id as exonStableId,
-			e.seq_region_start as ExonSeqRegionStart, e.seq_region_end as exonSeqRegionEnd
+			e.seq_region_start as ExonSeqRegionStart, e.seq_region_end as exonSeqRegionEnd,
+			t.seq_region_strand as transcriptStrand, e.seq_region_strand as exonStrand
 			from gene g
 			JOIN transcript t
 			ON t.gene_id = g.gene_id

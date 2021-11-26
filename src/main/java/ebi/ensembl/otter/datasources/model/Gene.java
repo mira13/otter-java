@@ -117,7 +117,7 @@ public class Gene {
 		this.source = source.toString();
 		this.description = description.toString();
 		this.version = version.toString();
-		if (isCurrent.toString().equals("1")) {
+		if (isCurrent.toString().equals("true")) {
 			this.isCurrent = true;
 		} else {
 			this.isCurrent = false;
@@ -125,7 +125,7 @@ public class Gene {
 
 		this.canonicalTranscriptId = canonicalTranscriptId.toString();
 		this.stable_id = stable_id.toString();
-        this.attributes = new ArrayList<>();
+		this.attributes = new ArrayList<>();
 		this.createdDate = (Date) createdDate;
 		this.modifiedDate = (Date) modifiedDate;
 	}

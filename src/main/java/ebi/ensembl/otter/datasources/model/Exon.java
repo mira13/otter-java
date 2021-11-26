@@ -74,15 +74,15 @@ public class Exon {
 		this.end_phase = Integer.valueOf(end_phase.toString());
 		this.version = version.toString();
 		this.isCurrent = isCurrent;
-		if (isConstitutive.toString().equals("1")) {
+		if (isConstitutive.toString().equals("true")) {
 			this.isConstitutive = true;
 		} else {
 			this.isConstitutive = false;
 		}
 
 		this.stable_id = stable_id.toString();
-		// this.createdDate = createdDate.toString();
-		// this.modifiedDate = modifiedDate.toString();
+		this.createdDate = (Date) createdDate;
+		this.modifiedDate = (Date) modifiedDate;
 	}
 
 	public Date getCreatedDate() {

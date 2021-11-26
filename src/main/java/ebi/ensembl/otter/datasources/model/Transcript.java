@@ -105,7 +105,7 @@ public class Transcript {
 	 */
 	public Transcript(Object transcriptId, Object biotype, Object analysisId, Object geneId, Object seqRegionId,
 			Object seqRegionStart, Object seqRegionEnd, Object seqRegionStrand, Object displayXrefId, Object source,
-			Object description, Object version, Boolean isCurrent, Object canonicalTranslationId, Object stableId) {
+			Object description, Object version, Object isCurrent, Object canonicalTranslationId, Object stableId) {
 		super();
 		this.transcriptId = Integer.valueOf(transcriptId.toString());
 		this.biotype = biotype.toString();
@@ -123,13 +123,16 @@ public class Transcript {
 			this.description = description.toString();
 		}
 		this.version = version.toString();
-		this.isCurrent = isCurrent;
-		if (canonicalTranslationId != null) {
+		if (isCurrent.toString().equals("true")) {
+			this.isCurrent = true;
+		} else {
+			this.isCurrent = false;
+		}		if (canonicalTranslationId != null) {
 			this.canonicalTranslationId = canonicalTranslationId.toString();
 		}
 		this.stableId = stableId.toString();
-		this.createdDate = createdDate;
-		this.modifiedDate = modifiedDate;
+		this.createdDate = (Date) createdDate;
+		this.modifiedDate = (Date) modifiedDate;
 
 		this.exons = new ArrayList<>();
 		this.attributes = new ArrayList<>();

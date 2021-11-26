@@ -1,6 +1,5 @@
 package ebi.ensembl.otter.datasources.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import ebi.ensembl.otter.datasources.model.Transcript;
-import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 
 public interface TranscriptRepository extends JpaRepository<Transcript, Integer> {
 
@@ -18,23 +16,5 @@ public interface TranscriptRepository extends JpaRepository<Transcript, Integer>
 			WHERE t.geneId = :geneId
 			""")
 	public List<Transcript> fetchByGeneId(@Param("geneId") Integer geneId);
-
-	public default List<FeatureAttribute> getTranscriptAttribById(Integer transcriptId) {
-		List<FeatureAttribute> featureList = new ArrayList<>();
-
-		List<Object[]> rawList = this.getTranscriptAttribByIdRaw(transcriptId);
-		for (Object[] attribItem : rawList) {
-			featureList.add(new FeatureAttribute(attribItem[0], attribItem[1]));
-		}
-		return featureList;
-	}
-
-	@Query(value = """
-			SELECT attrib_type.name as name, transcript_attrib.value as value from transcript_attrib
-			JOIN attrib_type
-			ON attrib_type.attrib_type_id = transcript_attrib.attrib_type_id
-			WHERE transcript_id = :transcriptId
-			""", nativeQuery = true)
-	public List<Object[]> getTranscriptAttribByIdRaw(@Param("transcriptId") Integer geneId);
 
 }
