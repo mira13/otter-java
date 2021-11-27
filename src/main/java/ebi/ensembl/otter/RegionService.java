@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import ebi.ensembl.otter.datasources.model.Exon;
@@ -21,79 +22,105 @@ import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 public class RegionService {
 
 	@Autowired
-	GeneRepository geneRepository;
+	AuthorRepository authorRepository;
 
-	@Autowired
-	TranscriptRepository transcriptRepository;
+	private Integer cacheTranscriptCount = 0;
 
 	@Autowired
 	EvidenceRepository evidenceRepository;
+	
+	@Value("${cache.transcriptsMaxAmount}")
+	private Integer transcriptsMaxAmount;
 
 	@Autowired
-	AuthorRepository authorRepository;
+	GeneAttributeService geneAttributeService;
+
+	private HashMap<Integer, Gene> geneCache = new HashMap<>();
+
+	@Autowired
+	GeneRepository geneRepository;
 
 	@Autowired
 	SeqRegionService seqRegionService;
 
 	@Autowired
-	GeneAttributeService geneAttributeService;
+	TranscriptAttributeService transcriptAttributeService;
 
 	@Autowired
-	TranscriptAttributeService transcriptAttributeService;
-	
-	private Integer cacheTranscriptCount = 0;
-	
-	private HashMap<Integer, Gene> geneCache = new HashMap<>();
+	TranscriptRepository transcriptRepository;
+
+	private void fillGeneAndTranscriptsWithAttribsAndEvidences(List<Gene> rawList) {
+		for (Gene gene : rawList) {
+			gene.setAttributes(geneAttributeService.getGeneAttribById(gene.getGeneId()));
+			List<Transcript> transcripts = gene.getTranscripts();
+
+			for (Transcript transcript : transcripts) {
+				Integer transcriptId = transcript.getTranscriptId();
+
+				List<FeatureAttribute> transcriptAttributesList = transcriptAttributeService
+						.getTranscriptAttribById(transcriptId);
+
+				transcript.setAttributes(transcriptAttributesList);
+				transcript.setEvidence(evidenceRepository.findByTranscriptId(transcriptId));
+				this.cacheTranscriptCount++;
+			}
+		}
+	}
 
 	public List<Gene> getByCoordSysAndRegionNameAndStartAndEnd(String csName, String csVerison, String regionName,
 			Integer seqRegionStart, Integer seqRegionEnd) {
 
 		/*
-		 * Logic level. Filling transcripts with attribs could be done in "region"
-		 * high-level entity that is given to users. but then it follows out that any
-		 * logic should be done in regio constructor, as logic includes all
-		 * transformation needed to create user region entity, and also it will violate
-		 * dependency inversion principle that high level components should not depend
-		 * on low level, but vice versa So all logic of creating high level entity from
-		 * lower level is here in service for now. Steps are following: 1. Fill
-		 * transcripts with attribs and evidences 2. Remove exons that are out of range
-		 * 3. For each gene add remark about truncation and set truncated flag 4.
-		 * Convert all remark and attrib objects to high-level entity format All this
-		 * steps includes knowledges about how genes-transcripts-exons-evidences and
-		 * attribs are connected logically to one structure,so it is higher-level than
-		 * simple data-models so should be implemented here in logic level.
-		 *
+		 * Logic level. 
+ 		 * 1. Fill transcripts with attribs and evidences 
+ 		 * 2. Remove exons that are out of range
+		 * 3. For each gene add remark about truncation and set truncated flag 
 		 */
+		
 		Integer seqRegionId = seqRegionService.getNameAndCoordSystem(regionName, csName, csVerison).getSeqRegionId();
+
+		// This request we execute always, even it fetches already cached
+		// genes-transcripts-exons it always finished in 0.2 sec approximately
 		List<Gene> rawList = geneRepository.findBySeqRegionIdAndStartAndEnd(seqRegionId, seqRegionStart, seqRegionEnd);
-        List<Gene> resultGeneList = new ArrayList<>();
-		if (cacheTranscriptCount > 1000000) { // reset cache if it is too big
-			// TODO - finish cache clean here
+		List<Gene> returnedGeneList = new ArrayList<>();
+
+		// Flush cache if it exceed allowed size
+		// TODO: remove genes form cache, after genes are changed saved to db.
+		if (cacheTranscriptCount > transcriptsMaxAmount) { // reset cache if it is too big
 			geneCache = new HashMap<>();
 		}
-        Iterator<Gene> iterGene = rawList.iterator();
-		
+        System.out.println(cacheTranscriptCount);
+		/*
+		 * cached genes we add to returned result directly, not cached we leave in raw
+		 * list for pull
+		 */
+		Iterator<Gene> iterGene = rawList.iterator();
 		while (iterGene.hasNext()) {
 			Gene gene = iterGene.next();
 			if (geneCache.containsKey(gene.getGeneId())) {
-				resultGeneList.add(geneCache.get(gene.getGeneId()));
+				returnedGeneList.add(geneCache.get(gene.getGeneId()));
 				iterGene.remove();
 			}
 		}
-		
-		List<Gene> genes = this.fillGeneAndTranscriptsWithAttribsAndEvidences(rawList);
-		
-		for (Gene gene : genes) {
-			resultGeneList.add(gene);
+
+		this.fillGeneAndTranscriptsWithAttribsAndEvidences(rawList);
+
+		// Add genes with attributes, transcripts with attrib and evidences
+		// and exons to result list and to cache
+		for (Gene gene : rawList) {
+			returnedGeneList.add(gene);
 			geneCache.put(gene.getGeneId(), gene);
 		}
-		
-		for (Gene gene : resultGeneList) {
-			for (Transcript transcript : gene.getTranscripts()) {
-				Integer transcriptId = transcript.getTranscriptId();
 
-				List<FeatureAttribute> transcriptAttributesList = transcriptAttributeService
-						.getTranscriptAttribById(transcriptId);
+		this.trimExons(returnedGeneList, seqRegionStart, seqRegionEnd);
+		return returnedGeneList;
+	}
+
+	private void trimExons(List<Gene> geneList, int seqRegionStart, int seqRegionEnd) {
+		for (Gene gene : geneList) {
+			for (Transcript transcript : gene.getTranscripts()) {
+				
+				Integer transcriptId = transcript.getTranscriptId();
 				String transcriptName = "";
 
 				int i = 0;
@@ -119,33 +146,5 @@ public class RegionService {
 				}
 			}
 		}
-		return resultGeneList;
-
 	}
-
-	private List<Gene> fillGeneAndTranscriptsWithAttribsAndEvidences(List<Gene> rawList) {
-		for (Gene gene : rawList) {
-			gene.setAttributes(geneAttributeService.getGeneAttribById(gene.getGeneId()));
-			List<Transcript> transcripts = gene.getTranscripts();
-
-			for (Transcript transcript : transcripts) {
-				Integer transcriptId = transcript.getTranscriptId();
-
-				List<FeatureAttribute> transcriptAttributesList = transcriptAttributeService
-						.getTranscriptAttribById(transcriptId);
-				String transcriptName = "";
-
-				for (FeatureAttribute attribute : transcriptAttributesList) {
-					if (attribute.getName().equals("Name")) {
-						transcriptName = attribute.getValue();
-					}
-				}
-				transcript.setAttributes(transcriptAttributesList);
-				transcript.setEvidence(evidenceRepository.findByTranscriptId(transcriptId));
-				this.cacheTranscriptCount++;
-			}
-		}
-		return rawList;		
-	}
-
 }

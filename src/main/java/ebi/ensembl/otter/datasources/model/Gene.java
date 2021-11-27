@@ -115,7 +115,9 @@ public class Gene {
 			this.displayXrefId = Integer.valueOf(displayXrefId.toString());
 		}
 		this.source = source.toString();
-		this.description = description.toString();
+		if (description != null) {
+			this.description = description.toString();
+		}
 		this.version = version.toString();
 		if (isCurrent.toString().equals("true")) {
 			this.isCurrent = true;
