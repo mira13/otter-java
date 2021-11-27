@@ -102,7 +102,6 @@ public class Gene {
 			Object seqRegionStart, Object seqRegionEnd, Object seqRegionStrand, Object displayXrefId, Object source,
 			Object description, Object version, Object isCurrent, Object canonicalTranscriptId, Object stable_id,
 			Object createdDate, Object modifiedDate) {
-		super();
 		this.geneId = Integer.valueOf((geneId.toString()));
 		this.transcripts = transcripts;
 		this.biotype = biotype.toString();
@@ -127,7 +126,7 @@ public class Gene {
 
 		this.canonicalTranscriptId = canonicalTranscriptId.toString();
 		this.stable_id = stable_id.toString();
-		this.attributes = new ArrayList<>();
+		attributes = new ArrayList<>();
 		this.createdDate = (Date) createdDate;
 		this.modifiedDate = (Date) modifiedDate;
 	}

@@ -28,7 +28,7 @@ public class RegionService {
 
 	@Autowired
 	EvidenceRepository evidenceRepository;
-	
+
 	@Value("${cache.transcriptsMaxAmount}")
 	private Integer transcriptsMaxAmount;
 
@@ -62,7 +62,7 @@ public class RegionService {
 
 				transcript.setAttributes(transcriptAttributesList);
 				transcript.setEvidence(evidenceRepository.findByTranscriptId(transcriptId));
-				this.cacheTranscriptCount++;
+				cacheTranscriptCount++;
 			}
 		}
 	}
@@ -71,12 +71,11 @@ public class RegionService {
 			Integer seqRegionStart, Integer seqRegionEnd) {
 
 		/*
-		 * Logic level. 
- 		 * 1. Fill transcripts with attribs and evidences 
- 		 * 2. Remove exons that are out of range
-		 * 3. For each gene add remark about truncation and set truncated flag 
+		 * Logic level. 1. Fill transcripts with attribs and evidences 2. Remove exons
+		 * that are out of range 3. For each gene add remark about truncation and set
+		 * truncated flag
 		 */
-		
+
 		Integer seqRegionId = seqRegionService.getNameAndCoordSystem(regionName, csName, csVerison).getSeqRegionId();
 
 		// This request we execute always, even it fetches already cached
@@ -89,7 +88,6 @@ public class RegionService {
 		if (cacheTranscriptCount > transcriptsMaxAmount) { // reset cache if it is too big
 			geneCache = new HashMap<>();
 		}
-        System.out.println(cacheTranscriptCount);
 		/*
 		 * cached genes we add to returned result directly, not cached we leave in raw
 		 * list for pull
@@ -103,7 +101,7 @@ public class RegionService {
 			}
 		}
 
-		this.fillGeneAndTranscriptsWithAttribsAndEvidences(rawList);
+		fillGeneAndTranscriptsWithAttribsAndEvidences(rawList);
 
 		// Add genes with attributes, transcripts with attrib and evidences
 		// and exons to result list and to cache
@@ -112,18 +110,16 @@ public class RegionService {
 			geneCache.put(gene.getGeneId(), gene);
 		}
 
-		this.trimExons(returnedGeneList, seqRegionStart, seqRegionEnd);
+		trimExons(returnedGeneList, seqRegionStart, seqRegionEnd);
 		return returnedGeneList;
 	}
 
 	private void trimExons(List<Gene> geneList, int seqRegionStart, int seqRegionEnd) {
 		for (Gene gene : geneList) {
 			for (Transcript transcript : gene.getTranscripts()) {
-				
-				Integer transcriptId = transcript.getTranscriptId();
+
 				String transcriptName = "";
 
-				int i = 0;
 				int removedCount = 0;
 
 				Iterator<Exon> iter = transcript.getExons().iterator();
@@ -134,7 +130,7 @@ public class RegionService {
 						iter.remove();
 						removedCount++;
 					}
-					i++;
+
 				}
 				if (removedCount == 1) {
 					gene.getAttributes().add(new FeatureAttribute("remark",

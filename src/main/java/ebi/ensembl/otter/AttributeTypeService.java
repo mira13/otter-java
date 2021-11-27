@@ -28,7 +28,7 @@ public class AttributeTypeService {
 
 	public String getAttributeNameById(Integer id) {
 		if (!attribList.containsKey(id)) {
-			this.updateAttributeTypeList();
+			updateAttributeTypeList();
 		}
 
 		return attribList.containsKey(id) ? attribList.get(id) : "Warning: no attribute name found";
