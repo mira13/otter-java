@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ebi.ensembl.otter.RegionService;
 import ebi.ensembl.otter.datasources.model.Gene;
+import ebi.ensembl.otter.webAPIControllers.model.otter.RegionOtter;
 
 @RestController
 @CrossOrigin
@@ -26,7 +27,7 @@ public class RegionController {
 	public List<Gene> findAllBySeqRegionId(@RequestBody String body) throws JSONException {
 
 		JSONObject jObject = new JSONObject(body);
-		return service.getByCoordSysAndRegionNameAndStartAndEnd(jObject.getString("csName"),
+		return service.getOtterRegion(jObject.getString("csName"),
 				jObject.getString("csVersion"), jObject.getString("seqRegionName"),
 				Integer.valueOf(jObject.getString("seqRegionStart")),
 				Integer.valueOf(jObject.getString("seqRegionEnd")));

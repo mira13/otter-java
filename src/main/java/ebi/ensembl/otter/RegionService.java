@@ -11,64 +11,50 @@ import org.springframework.stereotype.Service;
 
 import ebi.ensembl.otter.datasources.model.Exon;
 import ebi.ensembl.otter.datasources.model.Gene;
+import ebi.ensembl.otter.datasources.model.SimpleFeature;
 import ebi.ensembl.otter.datasources.model.Transcript;
-import ebi.ensembl.otter.datasources.repository.AuthorRepository;
-import ebi.ensembl.otter.datasources.repository.EvidenceRepository;
-import ebi.ensembl.otter.datasources.repository.GeneRepository;
-import ebi.ensembl.otter.datasources.repository.TranscriptRepository;
 import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
+import ebi.ensembl.otter.webAPIControllers.model.otter.RegionOtter;
 
 @Service
 public class RegionService {
 
-	@Autowired
-	AuthorRepository authorRepository;
-
 	private Integer cacheTranscriptCount = 0;
-
-	@Autowired
-	EvidenceRepository evidenceRepository;
-
-	@Value("${cache.transcriptsMaxAmount}")
-	private Integer transcriptsMaxAmount;
-
-	@Autowired
-	GeneAttributeService geneAttributeService;
 
 	private HashMap<Integer, Gene> geneCache = new HashMap<>();
 
 	@Autowired
-	GeneRepository geneRepository;
+	GeneService geneService;
 
 	@Autowired
 	SeqRegionService seqRegionService;
 
 	@Autowired
-	TranscriptAttributeService transcriptAttributeService;
-
+	TranscriptService transcriptService;
+	
 	@Autowired
-	TranscriptRepository transcriptRepository;
+	SimpleFeatureService simpleFeatureService;
+
+	@Value("${cache.transcriptsMaxAmount}")
+	private Integer transcriptsMaxAmount;
 
 	private void fillGeneAndTranscriptsWithAttribsAndEvidences(List<Gene> rawList) {
 		for (Gene gene : rawList) {
-			gene.setAttributes(geneAttributeService.getGeneAttribById(gene.getGeneId()));
+			gene.setAttributes(geneService.getGeneAttribById(gene.getGeneId()));
 			List<Transcript> transcripts = gene.getTranscripts();
 
 			for (Transcript transcript : transcripts) {
 				Integer transcriptId = transcript.getTranscriptId();
 
-				List<FeatureAttribute> transcriptAttributesList = transcriptAttributeService
-						.getTranscriptAttribById(transcriptId);
-
-				transcript.setAttributes(transcriptAttributesList);
-				transcript.setEvidence(evidenceRepository.findByTranscriptId(transcriptId));
+				transcript.setAttributes( transcriptService
+						.getTranscriptAttribById(transcriptId));
+				transcript.setEvidence(transcriptService.findEvidenceByTranscriptId(transcriptId));
 				cacheTranscriptCount++;
 			}
 		}
 	}
 
-	public List<Gene> getByCoordSysAndRegionNameAndStartAndEnd(String csName, String csVerison, String regionName,
-			Integer seqRegionStart, Integer seqRegionEnd) {
+	public List<Gene> getByRegionIdAndStartAndEnd(Integer seqRegionId, Integer seqRegionStart, Integer seqRegionEnd) {
 
 		/*
 		 * Logic level. 1. Fill transcripts with attribs and evidences 2. Remove exons
@@ -76,11 +62,9 @@ public class RegionService {
 		 * truncated flag
 		 */
 
-		Integer seqRegionId = seqRegionService.getNameAndCoordSystem(regionName, csName, csVerison).getSeqRegionId();
-
 		// This request we execute always, even it fetches already cached
 		// genes-transcripts-exons it always finished in 0.2 sec approximately
-		List<Gene> rawList = geneRepository.findBySeqRegionIdAndStartAndEnd(seqRegionId, seqRegionStart, seqRegionEnd);
+		List<Gene> rawList = geneService.findBySeqRegionIdAndStartAndEnd(seqRegionId, seqRegionStart, seqRegionEnd);
 		List<Gene> returnedGeneList = new ArrayList<>();
 
 		// Flush cache if it exceed allowed size
@@ -114,24 +98,34 @@ public class RegionService {
 		return returnedGeneList;
 	}
 
+	public List<Gene> getOtterRegion(String csName, String csVerison, String regionName, Integer seqRegionStart,
+			Integer seqRegionEnd) {
+		List<RegionOtter> result = new ArrayList<>();
+
+		Integer seqRegionId = seqRegionService.getNameAndCoordSystem(regionName, csName, csVerison).getSeqRegionId();
+		List<Gene> genes = getByRegionIdAndStartAndEnd(seqRegionId, seqRegionStart, seqRegionEnd);
+
+		List<SimpleFeature> simpleFeatures = simpleFeatureService.findBySeqRegionIdStartAndEnd(seqRegionId,
+				seqRegionStart, seqRegionEnd);
+
+		return genes;
+	}
+
 	private void trimExons(List<Gene> geneList, int seqRegionStart, int seqRegionEnd) {
 		for (Gene gene : geneList) {
 			for (Transcript transcript : gene.getTranscripts()) {
-
 				String transcriptName = "";
-
 				int removedCount = 0;
 
 				Iterator<Exon> iter = transcript.getExons().iterator();
-
 				while (iter.hasNext()) {
 					Exon exon = iter.next();
 					if (exon.getSeqRegionStart() < seqRegionStart || exon.getSeqRegionEnd() > seqRegionEnd) {
 						iter.remove();
 						removedCount++;
 					}
-
 				}
+
 				if (removedCount == 1) {
 					gene.getAttributes().add(new FeatureAttribute("remark",
 							"Transcript " + transcriptName + " has 1 exon that is not in this slice"));
