@@ -1,5 +1,6 @@
 package ebi.ensembl.otter;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class GeneService {
 	@Autowired
 	private AuthorService authorService;
 
+	private HashMap<Integer, String> geneAuthor = new HashMap<>();
+
 	public MultiValueMap<String, String> getGeneAttribById(Integer geneId) {
 		MultiValueMap<String, String> attribList = new LinkedMultiValueMap<>();
 		List<GeneAttribute> rawList = attributeRepository.findByGeneId(geneId);
@@ -56,12 +59,15 @@ public class GeneService {
 	}
 
 	public String getAuthorByGeneId(Integer geneId) {
-		List<GeneAuthor> author = authorRepository.findByGeneId(geneId);
-		String result = "";
-		if (!author.isEmpty()) {
-			result = authorService.getAuthorNameById(authorRepository.findByGeneId(geneId).get(0).getAuthorId());
+		if (geneAuthor.containsKey(geneId)) {
+			return geneAuthor.get(geneId);
 		}
-		return result;
+		List<GeneAuthor> author = authorRepository.findByGeneId(geneId);
+		if (!author.isEmpty()) {
+			geneAuthor.put(geneId,
+					authorService.getAuthorNameById(authorRepository.findByGeneId(geneId).get(0).getAuthorId()));
+		}
+		return geneAuthor.get(geneId);
 	}
 
 }
