@@ -1,5 +1,6 @@
 package ebi.ensembl.otter;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,10 @@ import org.springframework.util.MultiValueMap;
 
 import ebi.ensembl.otter.datasources.model.Evidence;
 import ebi.ensembl.otter.datasources.model.TranscriptAttribute;
+import ebi.ensembl.otter.datasources.model.TranscriptAuthor;
 import ebi.ensembl.otter.datasources.repository.EvidenceRepository;
 import ebi.ensembl.otter.datasources.repository.TranscriptAttributeRepository;
+import ebi.ensembl.otter.datasources.repository.TranscriptAuthorRepository;
 
 @Service
 public class TranscriptService {
@@ -23,6 +26,14 @@ public class TranscriptService {
 
 	@Autowired
 	private AttributeTypeService attributeTypeService;
+	
+	@Autowired
+	private TranscriptAuthorRepository authorRepository;
+	
+	@Autowired
+	private AuthorService authorService;
+	
+	private HashMap<Integer, String> transcriptAuthor = new HashMap<>();
 
 	public MultiValueMap<String, String> getTranscriptAttribById(Integer transcriptId) {
 		MultiValueMap<String, String> attribList = new LinkedMultiValueMap<>();
@@ -41,6 +52,18 @@ public class TranscriptService {
 	public List<Evidence> findEvidenceByTranscriptId(Integer transcriptId) {
 		return evidenceRepository.findByTranscriptId(transcriptId);
 
+	}
+	
+	public String getAuthorByTranscriptId(Integer transcriptId) {
+		if (transcriptAuthor.containsKey(transcriptId)) {
+			return transcriptAuthor.get(transcriptId);
+		}
+		List<TranscriptAuthor> author = authorRepository.findByGeneId(transcriptId);
+		if (!author.isEmpty()) {
+			transcriptAuthor.put(transcriptId,
+					authorService.getAuthorNameById(authorRepository.findByGeneId(transcriptId).get(0).getAuthorId()));
+		}
+		return transcriptAuthor.get(transcriptId);
 	}
 
 }
