@@ -212,9 +212,17 @@ public class RegionService {
 			featureNodeImpl.put("description", gene.getDescription());
 			featureNodeImpl.put("stable_id", gene.getStable_id());
 			featureNodeImpl.put("name", String.join(", ", gene.getAttributes().get("name")));
-			String biotype = getBiotype(gene);;
-			featureNodeImpl.put("type", biotype);
+			String biotype = getBiotype(gene);
 
+			featureNodeImpl.put("type", biotype);
+			featureNodeImpl.put("known", gene.getAttributes().get("status").contains("KNOWN") ? 1 : 0);
+			featureNodeImpl.put("truncated", gene.getTruncated());
+
+			ArrayNode remarkSetNode = featureNodeImpl.putArray("remark");
+
+			for (String remark : gene.getAttributes().get("remark")) {
+				ArrayNode remarkNodeImpl = remarkSetNode.add(remark);
+			}
 		}
 
 		String unwrappedXml = "";
@@ -225,7 +233,7 @@ public class RegionService {
 	}
 
 	private String getBiotype(Gene gene) {
-		String biotype;
+		String biotype = "";
 		for (String status : gene.getAttributes().get("status")) {
 			if (biotypesOtter.containsKey(status + gene.getBiotype())) {
 				biotype = biotypesOtter.get(status + gene.getBiotype());

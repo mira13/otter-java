@@ -43,6 +43,14 @@ public class Gene {
 	@Column(name = "analysis_id")
 	private Integer analysisId;
 
+	public Integer getTruncated() {
+		return truncated;
+	}
+
+	public void setTruncated(Integer truncated) {
+		this.truncated = truncated;
+	}
+
 	@Transient
 	private MultiValueMap<String, String> attributes;
 
@@ -74,6 +82,9 @@ public class Gene {
 	@Transient
 	@Autowired
 	GeneRepository repository;
+	
+	@Transient
+	private Integer truncated;
 
 	@Column(name = "seq_region_end")
 	private Integer seqRegionEnd;
