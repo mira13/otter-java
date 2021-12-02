@@ -122,8 +122,21 @@ public class RegionService {
 		}
 	}
 
-	public List<Gene> getByRegionIdAndStartAndEnd(Integer seqRegionId, Integer seqRegionStart, Integer seqRegionEnd) {
+	private String getBiotype(Gene gene) {
+		String biotype = "";
+		for (String status : gene.getAttributes().get("status")) {
+			if (biotypesOtter.containsKey(status + gene.getBiotype())) {
+				biotype = biotypesOtter.get(status + gene.getBiotype());
+			} else if (biotypesLowerCaseToCorrect.containsKey(gene.getBiotype().toLowerCase())) {
+				biotype = gene.getSource() + ":" + biotypesLowerCaseToCorrect.get(gene.getBiotype().toLowerCase());
+			} else {
+				biotype = gene.getSource() + ":" + gene.getBiotype().toLowerCase();
+			}
+		}
+		return biotype;
+	}
 
+	public List<Gene> getByRegionIdAndStartAndEnd(Integer seqRegionId, Integer seqRegionStart, Integer seqRegionEnd) {
 		/*
 		 * Logic level. 1. Fill transcripts with attribs and evidences 2. Remove exons
 		 * that are out of range 3. For each gene add remark about truncation and set
@@ -210,7 +223,6 @@ public class RegionService {
 			ObjectNode featureNodeImpl = locuSetNode.addObject();
 			featureNodeImpl.put("stable_id", gene.getStable_id());
 			featureNodeImpl.put("description", gene.getDescription());
-			featureNodeImpl.put("stable_id", gene.getStable_id());
 			featureNodeImpl.put("name", String.join(", ", gene.getAttributes().get("name")));
 			String biotype = getBiotype(gene);
 
@@ -223,6 +235,9 @@ public class RegionService {
 			for (String remark : gene.getAttributes().get("remark")) {
 				ArrayNode remarkNodeImpl = remarkSetNode.add(remark);
 			}
+			featureNodeImpl.put("author", geneService.getAuthorByGeneId(gene.getGeneId()));
+			featureNodeImpl.put("author_email", geneService.getAuthorByGeneId(gene.getGeneId()));
+
 		}
 
 		String unwrappedXml = "";
@@ -232,26 +247,12 @@ public class RegionService {
 				.writeValueAsString(entry.getValue());
 	}
 
-	private String getBiotype(Gene gene) {
-		String biotype = "";
-		for (String status : gene.getAttributes().get("status")) {
-			if (biotypesOtter.containsKey(status + gene.getBiotype())) {
-				biotype = biotypesOtter.get(status + gene.getBiotype());
-			} else if (biotypesLowerCaseToCorrect.containsKey(gene.getBiotype().toLowerCase())) {
-				biotype = gene.getSource() + ":" + biotypesLowerCaseToCorrect.get(gene.getBiotype().toLowerCase());
-			} else {
-				biotype = gene.getSource() + ":" + gene.getBiotype().toLowerCase();
-			}
-		}
-		return biotype;
-	}
-
 	private void trimExons(List<Gene> geneList, int seqRegionStart, int seqRegionEnd) {
 		for (Gene gene : geneList) {
 			for (Transcript transcript : gene.getTranscripts()) {
-				String transcriptName = "";
+				String transcriptName;
 				int removedCount = 0;
-
+				transcriptName = transcript.getAttributes().getFirst("name");
 				Iterator<Exon> iter = transcript.getExons().iterator();
 				while (iter.hasNext()) {
 					Exon exon = iter.next();

@@ -1,9 +1,8 @@
 package ebi.ensembl.otter.datasources.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,7 +18,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import ebi.ensembl.otter.datasources.repository.GeneRepository;
-import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 
 @Entity
 @Table(schema = "gene")

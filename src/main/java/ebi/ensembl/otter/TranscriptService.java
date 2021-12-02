@@ -1,7 +1,5 @@
 package ebi.ensembl.otter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +8,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import ebi.ensembl.otter.datasources.model.Evidence;
-import ebi.ensembl.otter.datasources.model.Transcript;
 import ebi.ensembl.otter.datasources.model.TranscriptAttribute;
 import ebi.ensembl.otter.datasources.repository.EvidenceRepository;
 import ebi.ensembl.otter.datasources.repository.TranscriptAttributeRepository;
-import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 
 @Service
 public class TranscriptService {

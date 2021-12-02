@@ -1,7 +1,5 @@
 package ebi.ensembl.otter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +9,10 @@ import org.springframework.util.MultiValueMap;
 
 import ebi.ensembl.otter.datasources.model.Gene;
 import ebi.ensembl.otter.datasources.model.GeneAttribute;
+import ebi.ensembl.otter.datasources.model.GeneAuthor;
 import ebi.ensembl.otter.datasources.repository.GeneAttributeRepository;
+import ebi.ensembl.otter.datasources.repository.GeneAuthorRepository;
 import ebi.ensembl.otter.datasources.repository.GeneRepository;
-import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 
 @Service
 public class GeneService {
@@ -22,10 +21,16 @@ public class GeneService {
 	private GeneAttributeRepository attributeRepository;
 
 	@Autowired
+	private GeneAuthorRepository authorRepository;
+
+	@Autowired
 	GeneRepository repository;
 
 	@Autowired
 	private AttributeTypeService attributeTypeService;
+
+	@Autowired
+	private AuthorService authorService;
 
 	public MultiValueMap<String, String> getGeneAttribById(Integer geneId) {
 		MultiValueMap<String, String> attribList = new LinkedMultiValueMap<>();
@@ -38,7 +43,7 @@ public class GeneService {
 		if (!attribList.containsKey("name")) {
 			attribList.add("name", "");
 		}
-		
+
 		if (!attribList.containsKey("status")) {
 			attribList.add("status", "");
 		}
@@ -48,6 +53,15 @@ public class GeneService {
 	public List<Gene> findBySeqRegionIdAndStartAndEnd(Integer seqRegionId, Integer seqRegionStart,
 			Integer seqRegionEnd) {
 		return repository.findBySeqRegionIdAndStartAndEnd(seqRegionId, seqRegionStart, seqRegionEnd);
+	}
+
+	public String getAuthorByGeneId(Integer geneId) {
+		List<GeneAuthor> author = authorRepository.findByGeneId(geneId);
+		String result = "";
+		if (!author.isEmpty()) {
+			result = authorService.getAuthorNameById(authorRepository.findByGeneId(geneId).get(0).getAuthorId());
+		}
+		return result;
 	}
 
 }
