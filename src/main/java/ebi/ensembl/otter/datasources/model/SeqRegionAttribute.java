@@ -10,7 +10,7 @@ import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 @Entity
-@Table(schema = "seq_region_attrib")
+@Table(name = "seq_region_attrib")
 @IdClass(SeqRegionAttribute.class)
 public class SeqRegionAttribute implements Serializable {
 

@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+
 import ebi.ensembl.otter.RegionService;
 import ebi.ensembl.otter.datasources.model.Gene;
 import ebi.ensembl.otter.webAPIControllers.model.otter.RegionOtter;
@@ -24,7 +27,7 @@ public class RegionController {
 	RegionService service;
 
 	@PostMapping("/getBySeqRegionNameAndCoordSystem")
-	public List<Gene> findAllBySeqRegionId(@RequestBody String body) throws JSONException {
+	public String findAllBySeqRegionId(@RequestBody String body) throws JSONException, JsonProcessingException, NumberFormatException {
 
 		JSONObject jObject = new JSONObject(body);
 		return service.getOtterRegion(jObject.getString("csName"),

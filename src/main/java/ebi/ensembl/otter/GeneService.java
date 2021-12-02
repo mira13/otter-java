@@ -1,10 +1,13 @@
 package ebi.ensembl.otter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import ebi.ensembl.otter.datasources.model.Gene;
 import ebi.ensembl.otter.datasources.model.GeneAttribute;
@@ -17,7 +20,6 @@ public class GeneService {
 
 	@Autowired
 	private GeneAttributeRepository attributeRepository;
-	
 
 	@Autowired
 	GeneRepository repository;
@@ -25,23 +27,27 @@ public class GeneService {
 	@Autowired
 	private AttributeTypeService attributeTypeService;
 
-	public List<FeatureAttribute> getGeneAttribById(Integer geneId) {
-		List<FeatureAttribute> featureList = new ArrayList<>();
+	public MultiValueMap<String, String> getGeneAttribById(Integer geneId) {
+		MultiValueMap<String, String> attribList = new LinkedMultiValueMap<>();
 		List<GeneAttribute> rawList = attributeRepository.findByGeneId(geneId);
 		for (GeneAttribute attribItem : rawList) {
-			featureList.add(new FeatureAttribute(
-					attributeTypeService.getAttributeNameById(attribItem.getAttributeTypeId()), attribItem.getValue()));
+			attribList.add(attributeTypeService.getAttributeNameById(attribItem.getAttributeTypeId()).toLowerCase(),
+					attribItem.getValue());
 		}
-		return featureList;
+		// Name and status key is expected to be always there
+		if (!attribList.containsKey("name")) {
+			attribList.add("name", "");
+		}
+		
+		if (!attribList.containsKey("status")) {
+			attribList.add("status", "");
+		}
+		return attribList;
 	}
 
 	public List<Gene> findBySeqRegionIdAndStartAndEnd(Integer seqRegionId, Integer seqRegionStart,
-			Integer seqRegionEnd) {	
+			Integer seqRegionEnd) {
 		return repository.findBySeqRegionIdAndStartAndEnd(seqRegionId, seqRegionStart, seqRegionEnd);
-	}
-
-	public void fetchGeneAttributes(Gene gene) {
-		gene.setAttributes(this.getGeneAttribById(gene.getGeneId()));
 	}
 
 }

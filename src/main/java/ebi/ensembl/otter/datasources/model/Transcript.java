@@ -2,6 +2,7 @@ package ebi.ensembl.otter.datasources.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -18,9 +19,10 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import ebi.ensembl.otter.datasources.repository.TranscriptRepository;
-import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
 
 @Entity
 @Table(schema = "transcript")
@@ -30,7 +32,7 @@ public class Transcript {
 	private Integer analysisId;
 
 	@Transient
-	private List<FeatureAttribute> attributes;
+	private MultiValueMap<String, String> attributes;
 
 	private String biotype;
 
@@ -106,7 +108,6 @@ public class Transcript {
 	public Transcript(Object transcriptId, Object biotype, Object analysisId, Object geneId, Object seqRegionId,
 			Object seqRegionStart, Object seqRegionEnd, Object seqRegionStrand, Object displayXrefId, Object source,
 			Object description, Object version, Object isCurrent, Object canonicalTranslationId, Object stableId) {
-		super();
 		this.transcriptId = Integer.valueOf(transcriptId.toString());
 		this.biotype = biotype.toString();
 		this.analysisId = Integer.valueOf(analysisId.toString());
@@ -127,16 +128,17 @@ public class Transcript {
 			this.isCurrent = true;
 		} else {
 			this.isCurrent = false;
-		}		if (canonicalTranslationId != null) {
+		}
+		if (canonicalTranslationId != null) {
 			this.canonicalTranslationId = canonicalTranslationId.toString();
 		}
 		this.stableId = stableId.toString();
-		this.createdDate = (Date) createdDate;
-		this.modifiedDate = (Date) modifiedDate;
+		createdDate = createdDate;
+		modifiedDate = modifiedDate;
 
-		this.exons = new ArrayList<>();
-		this.attributes = new ArrayList<>();
-		this.evidence = new ArrayList<>();
+		exons = new ArrayList<>();
+		attributes = new LinkedMultiValueMap<>();
+		evidence = new ArrayList<>();
 
 	}
 
@@ -144,7 +146,7 @@ public class Transcript {
 		return analysisId;
 	}
 
-	public List<FeatureAttribute> getAttributes() {
+	public MultiValueMap<String, String> getAttributes() {
 		return attributes;
 	}
 
@@ -228,7 +230,7 @@ public class Transcript {
 		this.analysisId = analysisId;
 	}
 
-	public void setAttributes(List<FeatureAttribute> attributes) {
+	public void setAttributes(MultiValueMap<String, String> attributes) {
 		this.attributes = attributes;
 	}
 
@@ -293,7 +295,7 @@ public class Transcript {
 	}
 
 	public void setStableId(String stable_id) {
-		this.stableId = stable_id;
+		stableId = stable_id;
 	}
 
 	public void setTranscriptId(Integer transcriptId) {

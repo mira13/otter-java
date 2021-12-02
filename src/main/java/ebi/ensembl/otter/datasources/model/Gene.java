@@ -2,8 +2,8 @@ package ebi.ensembl.otter.datasources.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,6 +15,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import ebi.ensembl.otter.datasources.repository.GeneRepository;
 import ebi.ensembl.otter.webAPIControllers.model.FeatureAttribute;
@@ -42,7 +44,7 @@ public class Gene {
 	private Integer analysisId;
 
 	@Transient
-	private List<FeatureAttribute> attributes;
+	private MultiValueMap<String, String> attributes;
 
 	private String biotype;
 
@@ -126,7 +128,7 @@ public class Gene {
 
 		this.canonicalTranscriptId = canonicalTranscriptId.toString();
 		this.stable_id = stable_id.toString();
-		attributes = new ArrayList<>();
+		attributes = new LinkedMultiValueMap<>();
 		this.createdDate = (Date) createdDate;
 		this.modifiedDate = (Date) modifiedDate;
 	}
@@ -135,7 +137,7 @@ public class Gene {
 		return analysisId;
 	}
 
-	public List<FeatureAttribute> getAttributes() {
+	public MultiValueMap<String, String> getAttributes() {
 		return attributes;
 	}
 
@@ -207,7 +209,7 @@ public class Gene {
 		this.analysisId = analysisId;
 	}
 
-	public void setAttributes(List<FeatureAttribute> attributes) {
+	public void setAttributes(MultiValueMap<String, String> attributes) {
 		this.attributes = attributes;
 	}
 

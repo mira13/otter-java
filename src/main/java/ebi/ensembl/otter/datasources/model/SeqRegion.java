@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -12,7 +13,7 @@ import javax.persistence.Table;
 @Table(schema = "seq_region")
 public class SeqRegion {
 
-	@OneToMany(mappedBy = "seqRegionId")
+	@OneToMany(mappedBy = "seqRegionId", fetch = FetchType.EAGER)
 	private List<SeqRegionAttribute> attributes;
 
 	@Column(name = "coord_system_id")
