@@ -82,7 +82,7 @@ public class Gene {
 	GeneRepository repository;
 	
 	@Transient
-	private Integer truncated;
+	private Integer truncated = 0;
 
 	@Column(name = "seq_region_end")
 	private Integer seqRegionEnd;

@@ -17,8 +17,8 @@ public class Exon {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
 
-	@Column(name = "end_phase")
-	private Integer end_phase;
+	@Column(name = "endPhase")
+	private Integer endPhase;
 
 	@Id
 	@Column(name = "exon_id")
@@ -50,7 +50,7 @@ public class Exon {
 	private Integer seqRegionStrand;
 
 	@Column(name = "stable_id")
-	private String stable_id;
+	private String stableId;
 
 	private String version;
 
@@ -62,8 +62,7 @@ public class Exon {
 	 * filled in gene
 	 */
 	public Exon(Object exontId, Object seqRegionId, Object seqRegionStart, Object seqRegionEnd, Object seqRegionStrand,
-			Object phase, Object end_phase, Object version, Boolean isCurrent, Object isConstitutive,
-			Object stable_id) {
+			Object phase, Object endPhase, Object version, Boolean isCurrent, Object isConstitutive, Object stable_id) {
 		super();
 		this.exontId = Integer.valueOf(exontId.toString());
 		this.seqRegionId = Integer.valueOf(seqRegionId.toString());
@@ -71,7 +70,7 @@ public class Exon {
 		this.seqRegionEnd = Integer.valueOf(seqRegionEnd.toString());
 		this.seqRegionStrand = Integer.valueOf(seqRegionStrand.toString());
 		this.phase = Integer.valueOf(phase.toString());
-		this.end_phase = Integer.valueOf(end_phase.toString());
+		this.endPhase = Integer.valueOf(endPhase.toString());
 		this.version = version.toString();
 		this.isCurrent = isCurrent;
 		if (isConstitutive.toString().equals("true")) {
@@ -80,7 +79,7 @@ public class Exon {
 			this.isConstitutive = false;
 		}
 
-		this.stable_id = stable_id.toString();
+		this.stableId = stable_id.toString();
 		this.createdDate = (Date) createdDate;
 		this.modifiedDate = (Date) modifiedDate;
 	}
@@ -89,8 +88,8 @@ public class Exon {
 		return createdDate;
 	}
 
-	public Integer getEnd_phase() {
-		return end_phase;
+	public Integer getEndPhase() {
+		return endPhase;
 	}
 
 	public Integer getExontId() {
@@ -129,8 +128,8 @@ public class Exon {
 		return seqRegionStrand;
 	}
 
-	public String getStable_id() {
-		return stable_id;
+	public String getStableId() {
+		return stableId;
 	}
 
 	public String getVersion() {
@@ -141,8 +140,8 @@ public class Exon {
 		this.createdDate = createdDate;
 	}
 
-	public void setEnd_phase(Integer end_phase) {
-		this.end_phase = end_phase;
+	public void setEndPhase(Integer endPhase) {
+		this.endPhase = endPhase;
 	}
 
 	public void setExontId(Integer exontId) {
@@ -181,8 +180,8 @@ public class Exon {
 		this.seqRegionStrand = seqRegionStrand;
 	}
 
-	public void setStable_id(String stable_id) {
-		this.stable_id = stable_id;
+	public void setStableId(String stableId) {
+		this.stableId = stableId;
 	}
 
 	public void setVersion(String version) {

@@ -58,10 +58,10 @@ public class TranscriptService {
 		if (transcriptAuthor.containsKey(transcriptId)) {
 			return transcriptAuthor.get(transcriptId);
 		}
-		List<TranscriptAuthor> author = authorRepository.findByGeneId(transcriptId);
+		List<TranscriptAuthor> author = authorRepository.findByTranscriptId(transcriptId);
 		if (!author.isEmpty()) {
 			transcriptAuthor.put(transcriptId,
-					authorService.getAuthorNameById(authorRepository.findByGeneId(transcriptId).get(0).getAuthorId()));
+					authorService.getAuthorNameById(authorRepository.findByTranscriptId(transcriptId).get(0).getAuthorId()));
 		}
 		return transcriptAuthor.get(transcriptId);
 	}

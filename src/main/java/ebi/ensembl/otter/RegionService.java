@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
+import ebi.ensembl.otter.datasources.model.Evidence;
 import ebi.ensembl.otter.datasources.model.Exon;
 import ebi.ensembl.otter.datasources.model.Gene;
 import ebi.ensembl.otter.datasources.model.SimpleFeature;
@@ -238,6 +239,45 @@ public class RegionService {
 			featureNodeImpl.put("author", geneService.getAuthorByGeneId(gene.getGeneId()));
 			featureNodeImpl.put("author_email", geneService.getAuthorByGeneId(gene.getGeneId()));
 
+			ArrayNode transcriptSetNode = featureNodeImpl.putArray("transcript");
+
+			for (Transcript transcript : gene.getTranscripts()) {
+				ObjectNode transcriptNodeImpl = transcriptSetNode.addObject();
+				transcriptNodeImpl.put("stable_id", transcript.getStableId());
+				featureNodeImpl.put("author", transcriptService.getAuthorByTranscriptId(transcript.getTranscriptId()));
+				featureNodeImpl.put("author_email",
+						transcriptService.getAuthorByTranscriptId(transcript.getTranscriptId()));
+
+				ArrayNode remarkTranscriptNode = transcriptNodeImpl.putArray("remark");
+
+				for (String remark : transcript.getAttributes().get("remark")) {
+					ArrayNode remarkTranscriptNodeImpl = remarkTranscriptNode.add(remark);
+				}
+
+				transcriptNodeImpl.put("source", transcript.getSource());
+				transcriptNodeImpl.put("name", transcript.getAttributes().getFirst("name"));
+
+				ObjectNode evidenceSetNode = transcriptNodeImpl.putObject("evidence_set");
+				ArrayNode evidenceNode = evidenceSetNode.putArray("evidence");
+				for (Evidence evidence : transcript.getEvidence()) {
+					ObjectNode evidenceNodeImpl = evidenceNode.addObject();
+					evidenceNodeImpl.put("name", evidence.getName());
+					evidenceNodeImpl.put("type", evidence.getType());
+				}
+
+				ObjectNode exonSetNode = transcriptNodeImpl.putObject("exon_set");
+				ArrayNode exonNode = exonSetNode.putArray("exon");
+				for (Exon exon : transcript.getExons()) {
+					ObjectNode exonNodeImpl = exonNode.addObject();
+					exonNodeImpl.put("stable_id", exon.getStableId());
+					exonNodeImpl.put("start", exon.getSeqRegionStart());
+					exonNodeImpl.put("end", exon.getSeqRegionEnd());
+					exonNodeImpl.put("strand", exon.getSeqRegionStrand());
+					exonNodeImpl.put("phase", exon.getPhase());
+					exonNodeImpl.put("end_phase", exon.getEndPhase());
+
+				}
+			}
 		}
 
 		String unwrappedXml = "";
@@ -254,10 +294,12 @@ public class RegionService {
 				int removedCount = 0;
 				transcriptName = transcript.getAttributes().getFirst("name");
 				Iterator<Exon> iter = transcript.getExons().iterator();
+
 				while (iter.hasNext()) {
 					Exon exon = iter.next();
 					if (exon.getSeqRegionStart() < seqRegionStart || exon.getSeqRegionEnd() > seqRegionEnd) {
 						iter.remove();
+						gene.setTruncated(1);
 						removedCount++;
 					}
 				}
