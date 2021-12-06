@@ -104,6 +104,9 @@ public class RegionService {
 
 	@Autowired
 	TranscriptService transcriptService;
+	
+	@Autowired
+	AssemblyService assemblyService;
 
 	@Value("${cache.transcriptsMaxAmount}")
 	private Integer transcriptsMaxAmount;
@@ -182,11 +185,11 @@ public class RegionService {
 
 	public String getOtterRegion(String csName, String csVerison, String regionName, Integer seqRegionStart,
 			Integer seqRegionEnd) throws JsonProcessingException {
-		List<RegionOtter> result = new ArrayList<>();
 
 		Integer seqRegionId = seqRegionService.getNameAndCoordSystem(regionName, csName, csVerison).getSeqRegionId();
 		List<Gene> genes = getByRegionIdAndStartAndEnd(seqRegionId, seqRegionStart, seqRegionEnd);
-
+		List<Integer> asmList = assemblyService.getSequenceLevelAssociatedRegionIdsByRegionId(seqRegionId, seqRegionStart, seqRegionEnd);
+		System.out.println(asmList);
 		List<SimpleFeature> simpleFeatures = simpleFeatureService.findBySeqRegionIdStartAndEnd(seqRegionId,
 				seqRegionStart, seqRegionEnd);
 
