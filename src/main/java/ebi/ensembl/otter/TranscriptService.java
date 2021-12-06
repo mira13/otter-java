@@ -46,6 +46,10 @@ public class TranscriptService {
 		if (!attribList.containsKey("name")) {
 			attribList.add("name", "");
 		}
+		
+		if (!attribList.containsKey("remark")) {
+			attribList.add("remark", "");
+		}
 		return attribList;
 	}
 

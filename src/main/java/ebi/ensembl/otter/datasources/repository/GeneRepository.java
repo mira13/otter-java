@@ -43,12 +43,12 @@ public interface GeneRepository extends JpaRepository<Gene, Integer> {
 			if (genes.get(geneIndex).getTranscripts().isEmpty() || !item[16].toString()
 					.equals(genes.get(geneIndex).getTranscripts().get(transcriptIndex).getTranscriptId().toString())) {
 				transcript = new Transcript(item[16], item[22], item[17], item[0], item[3], item[18], item[19],
-						item[35], item[20], item[21], item[23], item[26], true, item[24], item[25]);
+						item[37], item[20], item[21], item[23], item[26], true, item[24], item[25]);
 				genes.get(geneIndex).getTranscripts().add(transcript);
 			}
 
 			transcriptIndex = genes.get(geneIndex).getTranscripts().size() - 1;
-			exon = new Exon(item[29], item[3], item[35], item[36], item[36], item[31], item[32], item[30], true,
+			exon = new Exon(item[29], item[3], item[35], item[36], item[38], item[31], item[32], item[30], true,
 					item[33], item[34]);
 			genes.get(geneIndex).getTranscripts().get(transcriptIndex).getExons().add(exon);
 		}
@@ -90,6 +90,9 @@ public interface GeneRepository extends JpaRepository<Gene, Integer> {
 			OR
 			g.seq_region_end < :seqRegionEnd
 			AND g.seq_region_end > :seqRegionStart
+			OR
+			g.seq_region_end > :seqRegionEnd
+			AND g.seq_region_start < :seqRegionStart
 			)
 			AND g.is_current = 1
 			AND t.is_current=1

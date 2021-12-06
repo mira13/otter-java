@@ -50,6 +50,10 @@ public class GeneService {
 		if (!attribList.containsKey("status")) {
 			attribList.add("status", "");
 		}
+		
+		if (!attribList.containsKey("remark")) {
+			attribList.add("remark", "");
+		}
 		return attribList;
 	}
 

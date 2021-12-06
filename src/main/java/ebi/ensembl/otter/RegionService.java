@@ -203,17 +203,20 @@ public class RegionService {
 		ObjectNode sequenceNode = otter.putObject("sequence_set");
 		sequenceNode.put("assembly_type", regionName);
 
-		ObjectNode featureSetNode = sequenceNode.putObject("feature_set");
-		ArrayNode featureNode = featureSetNode.putArray("feature");
+		if (!simpleFeatures.isEmpty()) {
+			ObjectNode featureSetNode = sequenceNode.putObject("feature_set");
+			ArrayNode featureNode = featureSetNode.putArray("feature");
 
-		for (SimpleFeature feature : simpleFeatures) {
-			ObjectNode featureNodeImpl = featureNode.addObject();
-			featureNodeImpl.put("type", feature.getDisplayLabel().toLowerCase());
-			featureNodeImpl.put("start", feature.getSeqRegionStart());
-			featureNodeImpl.put("end", feature.getSeqRegionEnd());
-			featureNodeImpl.put("strand", feature.getSeqRegionStrand());
-			featureNodeImpl.put("score", feature.getScore());
-			featureNodeImpl.put("label", feature.getDisplayLabel());
+			for (SimpleFeature feature : simpleFeatures) {
+				ObjectNode featureNodeImpl = featureNode.addObject();
+				featureNodeImpl.put("type", feature.getDisplayLabel().toLowerCase());
+				featureNodeImpl.put("start", feature.getSeqRegionStart());
+				featureNodeImpl.put("end", feature.getSeqRegionEnd());
+				featureNodeImpl.put("strand", feature.getSeqRegionStrand());
+				featureNodeImpl.put("score", feature.getScore());
+				featureNodeImpl.put("label", feature.getDisplayLabel());
+
+			}
 
 		}
 
@@ -242,40 +245,43 @@ public class RegionService {
 			ArrayNode transcriptSetNode = featureNodeImpl.putArray("transcript");
 
 			for (Transcript transcript : gene.getTranscripts()) {
-				ObjectNode transcriptNodeImpl = transcriptSetNode.addObject();
-				transcriptNodeImpl.put("stable_id", transcript.getStableId());
-				featureNodeImpl.put("author", transcriptService.getAuthorByTranscriptId(transcript.getTranscriptId()));
-				featureNodeImpl.put("author_email",
-						transcriptService.getAuthorByTranscriptId(transcript.getTranscriptId()));
+				if (!transcript.getExons().isEmpty()) {
+					ObjectNode transcriptNodeImpl = transcriptSetNode.addObject();
+					transcriptNodeImpl.put("stable_id", transcript.getStableId());
+					featureNodeImpl.put("author",
+							transcriptService.getAuthorByTranscriptId(transcript.getTranscriptId()));
+					featureNodeImpl.put("author_email",
+							transcriptService.getAuthorByTranscriptId(transcript.getTranscriptId()));
 
-				ArrayNode remarkTranscriptNode = transcriptNodeImpl.putArray("remark");
+					ArrayNode remarkTranscriptNode = transcriptNodeImpl.putArray("remark");
 
-				for (String remark : transcript.getAttributes().get("remark")) {
-					ArrayNode remarkTranscriptNodeImpl = remarkTranscriptNode.add(remark);
-				}
+					for (String remark : transcript.getAttributes().get("remark")) {
+						ArrayNode remarkTranscriptNodeImpl = remarkTranscriptNode.add(remark);
+					}
 
-				transcriptNodeImpl.put("source", transcript.getSource());
-				transcriptNodeImpl.put("name", transcript.getAttributes().getFirst("name"));
+					transcriptNodeImpl.put("source", transcript.getSource());
+					transcriptNodeImpl.put("name", transcript.getAttributes().getFirst("name"));
 
-				ObjectNode evidenceSetNode = transcriptNodeImpl.putObject("evidence_set");
-				ArrayNode evidenceNode = evidenceSetNode.putArray("evidence");
-				for (Evidence evidence : transcript.getEvidence()) {
-					ObjectNode evidenceNodeImpl = evidenceNode.addObject();
-					evidenceNodeImpl.put("name", evidence.getName());
-					evidenceNodeImpl.put("type", evidence.getType());
-				}
+					ObjectNode evidenceSetNode = transcriptNodeImpl.putObject("evidence_set");
+					ArrayNode evidenceNode = evidenceSetNode.putArray("evidence");
+					for (Evidence evidence : transcript.getEvidence()) {
+						ObjectNode evidenceNodeImpl = evidenceNode.addObject();
+						evidenceNodeImpl.put("name", evidence.getName());
+						evidenceNodeImpl.put("type", evidence.getType());
+					}
 
-				ObjectNode exonSetNode = transcriptNodeImpl.putObject("exon_set");
-				ArrayNode exonNode = exonSetNode.putArray("exon");
-				for (Exon exon : transcript.getExons()) {
-					ObjectNode exonNodeImpl = exonNode.addObject();
-					exonNodeImpl.put("stable_id", exon.getStableId());
-					exonNodeImpl.put("start", exon.getSeqRegionStart());
-					exonNodeImpl.put("end", exon.getSeqRegionEnd());
-					exonNodeImpl.put("strand", exon.getSeqRegionStrand());
-					exonNodeImpl.put("phase", exon.getPhase());
-					exonNodeImpl.put("end_phase", exon.getEndPhase());
+					ObjectNode exonSetNode = transcriptNodeImpl.putObject("exon_set");
+					ArrayNode exonNode = exonSetNode.putArray("exon");
+					for (Exon exon : transcript.getExons()) {
+						ObjectNode exonNodeImpl = exonNode.addObject();
+						exonNodeImpl.put("stable_id", exon.getStableId());
+						exonNodeImpl.put("start", exon.getSeqRegionStart());
+						exonNodeImpl.put("end", exon.getSeqRegionEnd());
+						exonNodeImpl.put("strand", exon.getSeqRegionStrand());
+						exonNodeImpl.put("phase", exon.getPhase());
+						exonNodeImpl.put("end_phase", exon.getEndPhase());
 
+					}
 				}
 			}
 		}
