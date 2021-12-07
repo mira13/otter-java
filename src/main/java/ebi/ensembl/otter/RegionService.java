@@ -104,25 +104,23 @@ public class RegionService {
 
 	@Autowired
 	TranscriptService transcriptService;
-	
+
 	@Autowired
 	AssemblyService assemblyService;
 
 	@Value("${cache.transcriptsMaxAmount}")
 	private Integer transcriptsMaxAmount;
 
-	private void fillGeneAndTranscriptsWithAttribsAndEvidences(List<Gene> rawList) {
-		for (Gene gene : rawList) {
-			gene.setAttributes(geneService.getGeneAttribById(gene.getGeneId()));
-			List<Transcript> transcripts = gene.getTranscripts();
+	private void fillGeneAndTranscriptsWithAttribsAndEvidences(Gene gene) {
+		gene.setAttributes(geneService.getGeneAttribById(gene.getGeneId()));
+		List<Transcript> transcripts = gene.getTranscripts();
 
-			for (Transcript transcript : transcripts) {
-				Integer transcriptId = transcript.getTranscriptId();
+		for (Transcript transcript : transcripts) {
+			Integer transcriptId = transcript.getTranscriptId();
 
-				transcript.setAttributes(transcriptService.getTranscriptAttribById(transcriptId));
-				transcript.setEvidence(transcriptService.findEvidenceByTranscriptId(transcriptId));
-				cacheTranscriptCount++;
-			}
+			transcript.setAttributes(transcriptService.getTranscriptAttribById(transcriptId));
+			transcript.setEvidence(transcriptService.findEvidenceByTranscriptId(transcriptId));
+			cacheTranscriptCount++;
 		}
 	}
 
@@ -156,30 +154,22 @@ public class RegionService {
 		// TODO: remove genes form cache, after genes are changed saved to db.
 		if (cacheTranscriptCount > transcriptsMaxAmount) { // reset cache if it is too big
 			geneCache = new HashMap<>();
+			cacheTranscriptCount = 0;
 		}
-		/*
-		 * cached genes we add to returned result directly, not cached we leave in raw
-		 * list for pull
-		 */
+
 		Iterator<Gene> iterGene = rawList.iterator();
 		while (iterGene.hasNext()) {
 			Gene gene = iterGene.next();
-			if (geneCache.containsKey(gene.getGeneId())) {
-				returnedGeneList.add(geneCache.get(gene.getGeneId()));
-				iterGene.remove();
+			Integer geneId = gene.getGeneId();
+			if (!geneCache.containsKey(geneId)) {
+				fillGeneAndTranscriptsWithAttribsAndEvidences(gene);
+				geneCache.put(geneId, gene);
 			}
+			Gene trimmedGene = geneCache.get(geneId);
+			trimExons(trimmedGene, seqRegionStart, seqRegionEnd);
+			returnedGeneList.add(trimmedGene);
 		}
 
-		fillGeneAndTranscriptsWithAttribsAndEvidences(rawList);
-
-		// Add genes with attributes, transcripts with attrib and evidences
-		// and exons to result list and to cache
-		for (Gene gene : rawList) {
-			returnedGeneList.add(gene);
-			geneCache.put(gene.getGeneId(), gene);
-		}
-
-		trimExons(returnedGeneList, seqRegionStart, seqRegionEnd);
 		return returnedGeneList;
 	}
 
@@ -188,7 +178,8 @@ public class RegionService {
 
 		Integer seqRegionId = seqRegionService.getNameAndCoordSystem(regionName, csName, csVerison).getSeqRegionId();
 		List<Gene> genes = getByRegionIdAndStartAndEnd(seqRegionId, seqRegionStart, seqRegionEnd);
-		List<Integer> asmList = assemblyService.getSequenceLevelAssociatedRegionIdsByRegionId(seqRegionId, seqRegionStart, seqRegionEnd);
+		List<Integer> asmList = assemblyService.getSequenceLevelAssociatedRegionIdsByRegion(seqRegionId, seqRegionStart,
+				seqRegionEnd);
 		System.out.println(asmList);
 		List<SimpleFeature> simpleFeatures = simpleFeatureService.findBySeqRegionIdStartAndEnd(seqRegionId,
 				seqRegionStart, seqRegionEnd);
@@ -296,31 +287,30 @@ public class RegionService {
 				.writeValueAsString(entry.getValue());
 	}
 
-	private void trimExons(List<Gene> geneList, int seqRegionStart, int seqRegionEnd) {
-		for (Gene gene : geneList) {
-			for (Transcript transcript : gene.getTranscripts()) {
-				String transcriptName;
-				int removedCount = 0;
-				transcriptName = transcript.getAttributes().getFirst("name");
-				Iterator<Exon> iter = transcript.getExons().iterator();
+	private void trimExons(Gene gene, int seqRegionStart, int seqRegionEnd) {
+		for (Transcript transcript : gene.getTranscripts()) {
+			String transcriptName;
+			int removedCount = 0;
+			transcriptName = transcript.getAttributes().getFirst("name");
+			Iterator<Exon> iter = transcript.getExons().iterator();
 
-				while (iter.hasNext()) {
-					Exon exon = iter.next();
-					if (exon.getSeqRegionStart() < seqRegionStart || exon.getSeqRegionEnd() > seqRegionEnd) {
-						iter.remove();
-						gene.setTruncated(1);
-						removedCount++;
-					}
-				}
-
-				if (removedCount == 1) {
-					gene.getAttributes().add("remark",
-							"Transcript " + transcriptName + " has 1 exon that is not in this slice");
-				} else if (removedCount > 1) {
-					gene.getAttributes().add("remark", "Transcript " + transcriptName + " has " + removedCount
-							+ " exons that are not in this slice");
+			while (iter.hasNext()) {
+				Exon exon = iter.next();
+				if (exon.getSeqRegionStart() < seqRegionStart || exon.getSeqRegionEnd() > seqRegionEnd) {
+					iter.remove();
+					gene.setTruncated(1);
+					removedCount++;
 				}
 			}
+
+			if (removedCount == 1) {
+				gene.getAttributes().add("remark",
+						"Transcript " + transcriptName + " has 1 exon that is not in this slice");
+			} else if (removedCount > 1) {
+				gene.getAttributes().add("remark",
+						"Transcript " + transcriptName + " has " + removedCount + " exons that are not in this slice");
+			}
+
 		}
 	}
 }

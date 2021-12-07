@@ -15,6 +15,6 @@ public interface TranscriptRepository extends JpaRepository<Transcript, Integer>
 			JOIN FETCH t.exons
 			WHERE t.geneId = :geneId
 			""")
-	public List<Transcript> fetchByGeneId(@Param("geneId") Integer geneId);
+	public List<Transcript> fetchWithExonsByGeneId(@Param("geneId") Integer geneId);
 
 }

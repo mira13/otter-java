@@ -15,7 +15,7 @@ public class AssemblyService {
 	@Autowired
 	AssemblyRepository repository;
 
-	public List<Integer> getSequenceLevelAssociatedRegionIdsByRegionId(Integer regionId, Integer regionStart, Integer regionEnd) {
+	public List<Integer> getSequenceLevelAssociatedRegionIdsByRegion(Integer regionId, Integer regionStart, Integer regionEnd) {
 
 		List<Integer> result = new ArrayList<>();
 
